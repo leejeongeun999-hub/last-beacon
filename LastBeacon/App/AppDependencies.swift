@@ -5,15 +5,24 @@ struct AppDependencies {
     let saveStore: any SaveStore
     let adService: any AdServing
     let consentManager: any ConsentManaging
+    let audioService: any AudioServing
+    let hapticService: any HapticServing
+    let gameCenterService: any GameCenterServing
 
     init(
         saveStore: any SaveStore,
         adService: any AdServing = NoopAdService(),
-        consentManager: any ConsentManaging = NoopConsentManager()
+        consentManager: any ConsentManaging = NoopConsentManager(),
+        audioService: any AudioServing = NoopAudioService(),
+        hapticService: any HapticServing = NoopHapticService(),
+        gameCenterService: any GameCenterServing = NoopGameCenterService()
     ) {
         self.saveStore = saveStore
         self.adService = adService
         self.consentManager = consentManager
+        self.audioService = audioService
+        self.hapticService = hapticService
+        self.gameCenterService = gameCenterService
     }
 
     @MainActor
@@ -30,7 +39,10 @@ struct AppDependencies {
         return AppDependencies(
             saveStore: FileSaveStore(directory: support),
             adService: GoogleAdService(configuration: .bundled),
-            consentManager: GoogleConsentManager()
+            consentManager: GoogleConsentManager(),
+            audioService: LiveAudioService(),
+            hapticService: LiveHapticService(),
+            gameCenterService: LiveGameCenterService()
         )
     }
 }

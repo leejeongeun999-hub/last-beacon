@@ -15,6 +15,7 @@ final class AppModel: ObservableObject {
     let catalog: ContentCatalog
     private let dependencies: AppDependencies
     private var adInitializationGate = AdInitializationGate()
+    private var scoreQueue = GameCenterSubmissionQueue()
 
     init(
         dependencies: AppDependencies,
@@ -26,6 +27,13 @@ final class AppModel: ObservableObject {
 
     func load() async {
         document = await dependencies.saveStore.load()
+        dependencies.audioService.apply(settings: document.settings)
+        dependencies.hapticService.apply(settings: document.settings)
+        var loadedQueue = GameCenterSubmissionQueue(pending: document.pendingScores)
+        await loadedQueue.flush(using: dependencies.gameCenterService)
+        scoreQueue = loadedQueue
+        document.pendingScores = scoreQueue.pending
+        try? await dependencies.saveStore.save(document)
     }
 
     func startAdvertising() async {
@@ -61,6 +69,8 @@ final class AppModel: ObservableObject {
         document.statistics.totalRuns += 1
         document.statistics.totalSalvage += result.salvage
         if result.victory { document.statistics.victories += 1 }
+        dependencies.audioService.play(result.victory ? .victory : .defeat)
+        dependencies.hapticService.play(result.victory ? .success : .failure)
         try? await dependencies.saveStore.save(document)
         route = .results(result)
         if shouldPresentInterstitial {
@@ -70,6 +80,18 @@ final class AppModel: ObservableObject {
 
     func updateSettings(_ update: (inout GameSettings) -> Void) async {
         update(&document.settings)
+        dependencies.audioService.apply(settings: document.settings)
+        dependencies.hapticService.apply(settings: document.settings)
+        try? await dependencies.saveStore.save(document)
+    }
+
+    func submitEndlessScore(_ score: Int) async {
+        document.endlessHighScore = max(document.endlessHighScore, score)
+        var updatedQueue = scoreQueue
+        updatedQueue.enqueue(leaderboardID: "last_beacon_endless", value: score)
+        await updatedQueue.flush(using: dependencies.gameCenterService)
+        scoreQueue = updatedQueue
+        document.pendingScores = scoreQueue.pending
         try? await dependencies.saveStore.save(document)
     }
 

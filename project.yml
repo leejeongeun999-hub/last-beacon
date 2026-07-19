@@ -22,6 +22,7 @@ targets:
       - path: LastBeacon
         excludes:
           - Resources/Info.plist
+          - Resources/LastBeacon.entitlements
     dependencies:
       - package: GoogleMobileAds
         product: GoogleMobileAds
@@ -33,6 +34,7 @@ targets:
         INFOPLIST_FILE: LastBeacon/Resources/Info.plist
         MARKETING_VERSION: 1.0.0
         CURRENT_PROJECT_VERSION: 1
+        CODE_SIGN_ENTITLEMENTS: LastBeacon/Resources/LastBeacon.entitlements
       configs:
         Debug:
           GAD_APPLICATION_IDENTIFIER: ca-app-pub-3940256099942544~1458002511
