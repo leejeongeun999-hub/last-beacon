@@ -25,6 +25,27 @@ def last_beacon_api_key
   )
 end
 
+def last_beacon_review_information
+  profile = JSON.parse(File.read(RELEASE_PROFILE))
+  contact = profile.fetch("contact")
+  full_name = contact.fetch("name").strip
+  if full_name.include?(" ")
+    parts = full_name.split
+    last_name = parts.shift
+    first_name = parts.join(" ")
+  else
+    last_name = full_name[0]
+    first_name = full_name[1..]
+  end
+  {
+    first_name: first_name,
+    last_name: last_name,
+    phone_number: contact.fetch("phone"),
+    email_address: contact.fetch("appleId"),
+    notes: "The first mission includes the interactive tutorial. Interstitial ads appear only at eligible result transitions, never during play. A user-initiated rewarded ad can restore 40% beacon health once per defeated run. Privacy choices are available in Settings when required. No account or demo credentials are needed."
+  }
+end
+
 platform :ios do
   lane :test do
     sh("xcodegen", "generate", "--spec", File.join(PROJECT_ROOT, "project.yml"))
@@ -77,6 +98,11 @@ platform :ios do
       metadata_path: File.join(PROJECT_ROOT, "fastlane/metadata"),
       screenshots_path: File.join(PROJECT_ROOT, "fastlane/screenshots"),
       app_version: "1.0.0",
+      price_tier: 0,
+      copyright: "2026 Last Beacon",
+      primary_category: "Games",
+      primary_first_sub_category: "Strategy",
+      app_review_information: last_beacon_review_information,
       skip_binary_upload: true,
       skip_app_version_update: false,
       overwrite_screenshots: true,

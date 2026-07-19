@@ -25,7 +25,7 @@ The Apple ID, Developer Team ID, App Store Connect organization, API issuer/key/
 
 ## Advertising and privacy
 
-Google UMP refreshes on every launch and gates Mobile Ads initialization. Interstitials appear only at eligible result transitions; rewarded revive is user initiated and single-use. ATT is intentionally absent because the current binary audit contains no ATT symbol and the planned configuration does not access IDFA. Re-audit the final IPA and update App Privacy answers if the production AdMob configuration changes this data flow.
+Google UMP refreshes on every launch and gates Mobile Ads initialization. Interstitials appear only at eligible result transitions; rewarded revive is user initiated and single-use. The Google advertising SDK contains an ATT symbol, but the application does not import AppTrackingTransparency, request tracking authorization, or declare a tracking usage description. App Privacy must disclose the SDK data categories used for third-party advertising while answering that the application does not track users across other companies' apps or websites.
 
 ## Promotion
 
