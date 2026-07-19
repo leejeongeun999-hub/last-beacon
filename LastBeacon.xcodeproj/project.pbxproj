@@ -1,0 +1,519 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2903894849C8FD91FD25275B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162381D6BE74BC06BBEA8FDB /* HomeView.swift */; };
+		52BF3536EBF150419B096382 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */; };
+		535552C3F47CB5AC8D41711E /* LastBeaconApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B25FC3372D39C138DB05B /* LastBeaconApp.swift */; };
+		EC1693961F29FD610C75EC2A /* LaunchSmokeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE243DB72F2D4141E270EF7 /* LaunchSmokeUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		589CA60CDE9F5511263EBDDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B8C498C9E70F428B53459ED9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EB5D6D8E994374837B007D05;
+			remoteInfo = LastBeacon;
+		};
+		A39D6D3C8D1187023C964084 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B8C498C9E70F428B53459ED9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EB5D6D8E994374837B007D05;
+			remoteInfo = LastBeacon;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0BE243DB72F2D4141E270EF7 /* LaunchSmokeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSmokeUITests.swift; sourceTree = "<group>"; };
+		162381D6BE74BC06BBEA8FDB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1F5F49C6490E8ADEC2FC6EEB /* LastBeaconTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LastBeaconTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
+		641F490BBBD79BFE2DD46A52 /* LastBeaconUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LastBeaconUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F0B25FC3372D39C138DB05B /* LastBeaconApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastBeaconApp.swift; sourceTree = "<group>"; };
+		87BEFE51E7D26D5598674078 /* LastBeacon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LastBeacon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		25A249876AB552208BA575D8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				87BEFE51E7D26D5598674078 /* LastBeacon.app */,
+				1F5F49C6490E8ADEC2FC6EEB /* LastBeaconTests.xctest */,
+				641F490BBBD79BFE2DD46A52 /* LastBeaconUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4300B588856947D346A8335D /* LastBeaconUITests */ = {
+			isa = PBXGroup;
+			children = (
+				0BE243DB72F2D4141E270EF7 /* LaunchSmokeUITests.swift */,
+			);
+			path = LastBeaconUITests;
+			sourceTree = "<group>";
+		};
+		65D16E7487A1543C37DE73A2 /* LastBeaconTests */ = {
+			isa = PBXGroup;
+			children = (
+				3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */,
+			);
+			path = LastBeaconTests;
+			sourceTree = "<group>";
+		};
+		8704B09DB921F41B2D9EEDEC /* LastBeacon */ = {
+			isa = PBXGroup;
+			children = (
+				CAEDB4C65D4D8BD6DB1E8A0E /* App */,
+				8B924726F79296303ECC0C16 /* Features */,
+			);
+			path = LastBeacon;
+			sourceTree = "<group>";
+		};
+		8B924726F79296303ECC0C16 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B4AD24F27213D259ECC418B4 /* Home */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		B4AD24F27213D259ECC418B4 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				162381D6BE74BC06BBEA8FDB /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		C695444E99C75C9FBDF21A70 = {
+			isa = PBXGroup;
+			children = (
+				8704B09DB921F41B2D9EEDEC /* LastBeacon */,
+				65D16E7487A1543C37DE73A2 /* LastBeaconTests */,
+				4300B588856947D346A8335D /* LastBeaconUITests */,
+				25A249876AB552208BA575D8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CAEDB4C65D4D8BD6DB1E8A0E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				6F0B25FC3372D39C138DB05B /* LastBeaconApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		69B96D9CA33F901F916D7ABE /* LastBeaconUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB0ADA9A73B10241BAFE17AE /* Build configuration list for PBXNativeTarget "LastBeaconUITests" */;
+			buildPhases = (
+				CF352E8D01AE0DABB44C9D30 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BBAE7248032DB34B75378D18 /* PBXTargetDependency */,
+			);
+			name = LastBeaconUITests;
+			packageProductDependencies = (
+			);
+			productName = LastBeaconUITests;
+			productReference = 641F490BBBD79BFE2DD46A52 /* LastBeaconUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		AA2942028E248ED0B3B37B6E /* LastBeaconTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5655FAB7D38725C9486D5D9 /* Build configuration list for PBXNativeTarget "LastBeaconTests" */;
+			buildPhases = (
+				99CC76384428C64E6374ED5D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				480D4F4AA5AB7EA3D254AD37 /* PBXTargetDependency */,
+			);
+			name = LastBeaconTests;
+			packageProductDependencies = (
+			);
+			productName = LastBeaconTests;
+			productReference = 1F5F49C6490E8ADEC2FC6EEB /* LastBeaconTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EB5D6D8E994374837B007D05 /* LastBeacon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C90F561D0267F3577AC04CC3 /* Build configuration list for PBXNativeTarget "LastBeacon" */;
+			buildPhases = (
+				B9CCEC63060E51641F32B0A8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LastBeacon;
+			packageProductDependencies = (
+			);
+			productName = LastBeacon;
+			productReference = 87BEFE51E7D26D5598674078 /* LastBeacon.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B8C498C9E70F428B53459ED9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					69B96D9CA33F901F916D7ABE = {
+						TestTargetID = EB5D6D8E994374837B007D05;
+					};
+				};
+			};
+			buildConfigurationList = DFBB59250A4DD2B84729FB52 /* Build configuration list for PBXProject "LastBeacon" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = C695444E99C75C9FBDF21A70;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 25A249876AB552208BA575D8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EB5D6D8E994374837B007D05 /* LastBeacon */,
+				AA2942028E248ED0B3B37B6E /* LastBeaconTests */,
+				69B96D9CA33F901F916D7ABE /* LastBeaconUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		99CC76384428C64E6374ED5D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52BF3536EBF150419B096382 /* SmokeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9CCEC63060E51641F32B0A8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2903894849C8FD91FD25275B /* HomeView.swift in Sources */,
+				535552C3F47CB5AC8D41711E /* LastBeaconApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF352E8D01AE0DABB44C9D30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC1693961F29FD610C75EC2A /* LaunchSmokeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		480D4F4AA5AB7EA3D254AD37 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EB5D6D8E994374837B007D05 /* LastBeacon */;
+			targetProxy = 589CA60CDE9F5511263EBDDE /* PBXContainerItemProxy */;
+		};
+		BBAE7248032DB34B75378D18 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EB5D6D8E994374837B007D05 /* LastBeacon */;
+			targetProxy = A39D6D3C8D1187023C964084 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		10DA59877E5B2B7720920592 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LastBeacon.app/LastBeacon";
+			};
+			name = Release;
+		};
+		1629F8A28619E346FD735091 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LastBeacon.app/LastBeacon";
+			};
+			name = Debug;
+		};
+		59931A1993A80C69C02EF552 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon;
+				PRODUCT_NAME = LastBeacon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		65B39473E26EFB8E7A99E4E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LastBeacon;
+			};
+			name = Debug;
+		};
+		8911FB6647DB4888A0BF1646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Last Beacon";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.strategy-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A7368FFC96EA087B41E62244 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Last Beacon";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.strategy-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E33EFE1821D41FADEECB46CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon;
+				PRODUCT_NAME = LastBeacon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F65E69699AEB800972829B34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.limeunkyu.lastbeacon.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LastBeacon;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B5655FAB7D38725C9486D5D9 /* Build configuration list for PBXNativeTarget "LastBeaconTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1629F8A28619E346FD735091 /* Debug */,
+				10DA59877E5B2B7720920592 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C90F561D0267F3577AC04CC3 /* Build configuration list for PBXNativeTarget "LastBeacon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				59931A1993A80C69C02EF552 /* Debug */,
+				E33EFE1821D41FADEECB46CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CB0ADA9A73B10241BAFE17AE /* Build configuration list for PBXNativeTarget "LastBeaconUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				65B39473E26EFB8E7A99E4E9 /* Debug */,
+				F65E69699AEB800972829B34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DFBB59250A4DD2B84729FB52 /* Build configuration list for PBXProject "LastBeacon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8911FB6647DB4888A0BF1646 /* Debug */,
+				A7368FFC96EA087B41E62244 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B8C498C9E70F428B53459ED9 /* Project object */;
+}
