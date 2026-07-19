@@ -7,10 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2407744EF9FA343654915F1D /* CombatTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED37E8013E690C8700378A84 /* CombatTypes.swift */; };
 		2903894849C8FD91FD25275B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162381D6BE74BC06BBEA8FDB /* HomeView.swift */; };
 		52BF3536EBF150419B096382 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */; };
 		535552C3F47CB5AC8D41711E /* LastBeaconApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B25FC3372D39C138DB05B /* LastBeaconApp.swift */; };
+		846D4BF1E3C4AB663AE99E4B /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD418DBDF14368F9D5036E75 /* GameState.swift */; };
+		8EAECDE58DA917D08ED254AF /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD111B767F898E2BDAD7293 /* SeededGenerator.swift */; };
 		EC1693961F29FD610C75EC2A /* LaunchSmokeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE243DB72F2D4141E270EF7 /* LaunchSmokeUITests.swift */; };
+		F0761970EC83D6FEE00AA313 /* GameEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95335643ECF7331DCFD0D443 /* GameEngineTests.swift */; };
+		FB6E93B62A7DAD3284B0CA60 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35140565F421F06F71D5E9BA /* GameEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,9 +40,14 @@
 		162381D6BE74BC06BBEA8FDB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1F5F49C6490E8ADEC2FC6EEB /* LastBeaconTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LastBeaconTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
+		35140565F421F06F71D5E9BA /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
 		641F490BBBD79BFE2DD46A52 /* LastBeaconUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LastBeaconUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F0B25FC3372D39C138DB05B /* LastBeaconApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastBeaconApp.swift; sourceTree = "<group>"; };
 		87BEFE51E7D26D5598674078 /* LastBeacon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LastBeacon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		95335643ECF7331DCFD0D443 /* GameEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngineTests.swift; sourceTree = "<group>"; };
+		BD418DBDF14368F9D5036E75 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		ED37E8013E690C8700378A84 /* CombatTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombatTypes.swift; sourceTree = "<group>"; };
+		FCD111B767F898E2BDAD7293 /* SeededGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeededGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -62,9 +72,21 @@
 		65D16E7487A1543C37DE73A2 /* LastBeaconTests */ = {
 			isa = PBXGroup;
 			children = (
+				95335643ECF7331DCFD0D443 /* GameEngineTests.swift */,
 				3172A5F0F40B264361BBD1D1 /* SmokeTests.swift */,
 			);
 			path = LastBeaconTests;
+			sourceTree = "<group>";
+		};
+		8556257D629FFAA0A5D0BF31 /* GameModel */ = {
+			isa = PBXGroup;
+			children = (
+				ED37E8013E690C8700378A84 /* CombatTypes.swift */,
+				35140565F421F06F71D5E9BA /* GameEngine.swift */,
+				BD418DBDF14368F9D5036E75 /* GameState.swift */,
+				FCD111B767F898E2BDAD7293 /* SeededGenerator.swift */,
+			);
+			path = GameModel;
 			sourceTree = "<group>";
 		};
 		8704B09DB921F41B2D9EEDEC /* LastBeacon */ = {
@@ -72,6 +94,7 @@
 			children = (
 				CAEDB4C65D4D8BD6DB1E8A0E /* App */,
 				8B924726F79296303ECC0C16 /* Features */,
+				8556257D629FFAA0A5D0BF31 /* GameModel */,
 			);
 			path = LastBeacon;
 			sourceTree = "<group>";
@@ -206,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0761970EC83D6FEE00AA313 /* GameEngineTests.swift in Sources */,
 				52BF3536EBF150419B096382 /* SmokeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,8 +238,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2407744EF9FA343654915F1D /* CombatTypes.swift in Sources */,
+				FB6E93B62A7DAD3284B0CA60 /* GameEngine.swift in Sources */,
+				846D4BF1E3C4AB663AE99E4B /* GameState.swift in Sources */,
 				2903894849C8FD91FD25275B /* HomeView.swift in Sources */,
 				535552C3F47CB5AC8D41711E /* LastBeaconApp.swift in Sources */,
+				8EAECDE58DA917D08ED254AF /* SeededGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

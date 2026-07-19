@@ -123,7 +123,7 @@ func testSellingReturnsSeventyPercent() {
     var engine = GameEngine.fixture(energy: 100)
     engine.send(.build(kind: .pulse, socket: 0))
     engine.send(.sell(socket: 0))
-    XCTAssertEqual(engine.snapshot.energy, 86)
+    XCTAssertEqual(engine.snapshot.energy, 94)
 }
 ```
 
