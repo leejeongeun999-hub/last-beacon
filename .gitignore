@@ -1,0 +1,16 @@
+.DS_Store
+.worktrees/
+DerivedData/
+.build/
+build/
+*.xcarchive
+*.ipa
+fastlane/report.xml
+fastlane/test_output/
+fastlane/Preview.html
+*.p8
+*.p12
+*.mobileprovision
+.env
+.env.*
+private/
