@@ -29,7 +29,10 @@ def last_beacon_review_information
   profile = JSON.parse(File.read(RELEASE_PROFILE))
   contact = profile.fetch("contact")
   full_name = contact.fetch("name").strip
-  if full_name.include?(" ")
+  if full_name.downcase.start_with?("lee") && full_name.length > 3
+    last_name = full_name[0, 3].capitalize
+    first_name = full_name[3..].capitalize
+  elsif full_name.include?(" ")
     parts = full_name.split
     last_name = parts.shift
     first_name = parts.join(" ")
@@ -98,10 +101,9 @@ platform :ios do
       metadata_path: File.join(PROJECT_ROOT, "fastlane/metadata"),
       screenshots_path: File.join(PROJECT_ROOT, "fastlane/screenshots"),
       app_version: "1.0.0",
-      price_tier: 0,
       copyright: "2026 Last Beacon",
-      primary_category: "Games",
-      primary_first_sub_category: "Strategy",
+      primary_category: "GAMES",
+      primary_first_sub_category: "GAMES_STRATEGY",
       app_review_information: last_beacon_review_information,
       skip_binary_upload: true,
       skip_app_version_update: false,
