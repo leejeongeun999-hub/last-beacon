@@ -1,0 +1,103 @@
+default_platform(:ios)
+
+require "json"
+
+RELEASE_PROFILE = "/Users/lim-eunkyu/.codex/profiles/app-release.json"
+PROJECT_ROOT = File.expand_path("..", __dir__)
+
+def last_beacon_api_key
+  UI.user_error!("Release profile is unavailable") unless File.file?(RELEASE_PROFILE)
+  profile = JSON.parse(File.read(RELEASE_PROFILE))
+  team = profile.fetch("appleTeams").first
+  key_id = team.fetch("keyId")
+  key_path = team.fetch("privateKeyPaths").find do |path|
+    File.file?(path) && File.basename(path).include?(key_id)
+  end
+  UI.user_error!("Target App Store Connect key is unavailable") unless key_path
+  app_store_connect_api_key(
+    key_id: key_id,
+    issuer_id: team.fetch("issuerId"),
+    key_filepath: key_path,
+    duration: 1200,
+    in_house: false
+  )
+end
+
+platform :ios do
+  lane :test do
+    sh("xcodegen", "generate", "--spec", File.join(PROJECT_ROOT, "project.yml"))
+    scan(
+      project: File.join(PROJECT_ROOT, "LastBeacon.xcodeproj"),
+      scheme: "LastBeacon",
+      device: "LastBeacon Store iPhone 17 Pro Max",
+      derived_data_path: File.join(PROJECT_ROOT, "build/test-derived"),
+      clean: true
+    )
+    sh(File.join(PROJECT_ROOT, "scripts/audit_privacy.sh"), File.join(PROJECT_ROOT, "build/test-derived/Build/Products/Debug-iphonesimulator/LastBeacon.app"))
+    sh(File.join(PROJECT_ROOT, "scripts/validate_store_assets.sh"), File.join(PROJECT_ROOT, "fastlane/screenshots"))
+  end
+
+  lane :screenshots do
+    sh(File.join(PROJECT_ROOT, "scripts/capture_screenshots.sh"))
+  end
+
+  lane :archive do
+    sh(File.join(PROJECT_ROOT, "scripts/release_preflight.sh"))
+    sh("xcodegen", "generate", "--spec", File.join(PROJECT_ROOT, "project.yml"))
+    gym(
+      project: File.join(PROJECT_ROOT, "LastBeacon.xcodeproj"),
+      scheme: "LastBeacon",
+      configuration: "Release",
+      clean: true,
+      archive_path: File.join(PROJECT_ROOT, "build/release/LastBeacon.xcarchive"),
+      output_directory: File.join(PROJECT_ROOT, "build/release"),
+      output_name: "LastBeacon-1.0.0-1.ipa",
+      export_method: "app-store-connect",
+      xcargs: "-allowProvisioningUpdates"
+    )
+    sh(File.join(PROJECT_ROOT, "scripts/verify_ipa.sh"), File.join(PROJECT_ROOT, "build/release/LastBeacon-1.0.0-1.ipa"))
+  end
+
+  lane :upload_build do
+    pilot(
+      api_key: last_beacon_api_key,
+      app_identifier: "com.limeunkyu.lastbeacon",
+      apple_id: "6792522098",
+      ipa: File.join(PROJECT_ROOT, "build/release/LastBeacon-1.0.0-1.ipa"),
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  lane :upload_metadata do
+    deliver(
+      api_key: last_beacon_api_key,
+      app_identifier: "com.limeunkyu.lastbeacon",
+      metadata_path: File.join(PROJECT_ROOT, "fastlane/metadata"),
+      screenshots_path: File.join(PROJECT_ROOT, "fastlane/screenshots"),
+      app_version: "1.0.0",
+      skip_binary_upload: true,
+      skip_app_version_update: false,
+      overwrite_screenshots: true,
+      force: true
+    )
+  end
+
+  lane :submit do
+    deliver(
+      api_key: last_beacon_api_key,
+      app_identifier: "com.limeunkyu.lastbeacon",
+      app_version: "1.0.0",
+      build_number: "1",
+      submit_for_review: true,
+      automatic_release: false,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      force: true,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false
+      }
+    )
+  end
+end

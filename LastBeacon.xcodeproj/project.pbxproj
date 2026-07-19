@@ -486,6 +486,9 @@
 					69B96D9CA33F901F916D7ABE = {
 						TestTargetID = EB5D6D8E994374837B007D05;
 					};
+					EB5D6D8E994374837B007D05 = {
+						DevelopmentTeam = BYSD998XY3;
+					};
 				};
 			};
 			buildConfigurationList = DFBB59250A4DD2B84729FB52 /* Build configuration list for PBXProject "LastBeacon" */;
@@ -664,6 +667,7 @@
 				CODE_SIGN_ENTITLEMENTS = LastBeacon/Resources/LastBeacon.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BYSD998XY3;
 				GAD_APPLICATION_IDENTIFIER = "ca-app-pub-3940256099942544~1458002511";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = LastBeacon/Resources/Info.plist;
@@ -827,7 +831,8 @@
 				CODE_SIGN_ENTITLEMENTS = LastBeacon/Resources/LastBeacon.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				GAD_APPLICATION_IDENTIFIER = "";
+				DEVELOPMENT_TEAM = BYSD998XY3;
+				GAD_APPLICATION_IDENTIFIER = "ca-app-pub-5754584472729127~8554677780";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = LastBeacon/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -30,6 +30,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.limeunkyu.lastbeacon
         PRODUCT_NAME: LastBeacon
+        DEVELOPMENT_TEAM: BYSD998XY3
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: LastBeacon/Resources/Info.plist
         MARKETING_VERSION: 1.0.0
@@ -39,7 +40,7 @@ targets:
         Debug:
           GAD_APPLICATION_IDENTIFIER: ca-app-pub-3940256099942544~1458002511
         Release:
-          GAD_APPLICATION_IDENTIFIER: ""
+          GAD_APPLICATION_IDENTIFIER: ca-app-pub-5754584472729127~8554677780
   LastBeaconTests:
     type: bundle.unit-test
     platform: iOS

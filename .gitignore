@@ -3,11 +3,13 @@
 DerivedData/
 .build/
 build/
+.release.env
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots.html
 *.xcarchive
 *.ipa
-fastlane/report.xml
 fastlane/test_output/
-fastlane/Preview.html
 *.p8
 *.p12
 *.mobileprovision
