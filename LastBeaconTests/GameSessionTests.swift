@@ -55,4 +55,46 @@ final class GameSessionTests: XCTestCase {
         XCTAssertFalse(active.snapshot.enemies.isEmpty)
         XCTAssertEqual(upgrade.offeredUpgrades.count, 3)
     }
+
+    func testPausedSessionDoesNotAdvanceActiveWave() {
+        let mission = MissionDefinition(
+            id: "pause-test",
+            sector: 1,
+            startingEnergy: 100,
+            beaconHealth: 100,
+            waves: [WaveDefinition(spawns: [
+                EnemySpawn(time: 0, kind: .drone, lane: 0)
+            ])]
+        )
+        let session = GameSessionModel(mission: mission, seed: 5)
+        session.startWave()
+        session.tick(elapsed: 0.1)
+        let beforePause = session.snapshot
+
+        session.setPaused(true)
+        session.tick(elapsed: 1)
+
+        XCTAssertEqual(session.snapshot, beforePause)
+    }
+
+    func testOptionalConditionFailsAfterChoosingThreeUpgrades() {
+        let session = GameSessionModel(mission: ContentCatalog.launch.missions[0], seed: 10)
+        for _ in 0..<3 {
+            session.offerUpgrades()
+            let upgrade = try! XCTUnwrap(session.offeredUpgrades.first)
+            session.choose(upgrade)
+        }
+
+        XCTAssertFalse(session.result.optionalConditionMet)
+    }
+
+    func testTowerCommandsReportWhetherTheyChangedTheRun() {
+        let session = GameSessionModel(mission: ContentCatalog.launch.missions[0], seed: 10)
+
+        XCTAssertTrue(session.build(.pulse, at: 0))
+        XCTAssertFalse(session.build(.pulse, at: 0))
+        XCTAssertTrue(session.upgrade(at: 0))
+        XCTAssertTrue(session.sell(at: 0))
+        XCTAssertFalse(session.sell(at: 0))
+    }
 }

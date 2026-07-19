@@ -9,12 +9,16 @@ struct GameHostView: View {
     let onFinish: (RunResult) -> Void
     let onTutorialComplete: () -> Void
     let requestRewardedRevive: () async -> Bool
+    let reduceMotion: Bool
+    let onTowerAction: () -> Void
 
     init(
         mission: MissionDefinition,
         tutorialEnabled: Bool,
         seed: UInt64 = UInt64.random(in: 1...UInt64.max),
         screenshotFixture: StoreScreenshotFixture? = nil,
+        reduceMotion: Bool = false,
+        onTowerAction: @escaping () -> Void = { },
         onFinish: @escaping (RunResult) -> Void,
         onTutorialComplete: @escaping () -> Void,
         requestRewardedRevive: @escaping () async -> Bool
@@ -28,6 +32,8 @@ struct GameHostView: View {
         self.onFinish = onFinish
         self.onTutorialComplete = onTutorialComplete
         self.requestRewardedRevive = requestRewardedRevive
+        self.reduceMotion = reduceMotion
+        self.onTowerAction = onTowerAction
     }
 
     var body: some View {
@@ -38,7 +44,7 @@ struct GameHostView: View {
                 ZStack {
                     SpriteView(
                         scene: session.scene,
-                        preferredFramesPerSecond: 60,
+                        preferredFramesPerSecond: reduceMotion ? 30 : 60,
                         options: [.allowsTransparency]
                     )
                     socketControls
@@ -83,7 +89,7 @@ struct GameHostView: View {
         .foregroundStyle(.white)
         .sheet(isPresented: selectedSocketBinding) {
             if let socket = session.selectedSocket {
-                TowerControlSheet(session: session, socket: socket)
+                TowerControlSheet(session: session, socket: socket, onTowerAction: onTowerAction)
                     .presentationDetents([.height(280)])
                     .presentationDragIndicator(.visible)
             }
@@ -101,7 +107,12 @@ struct GameHostView: View {
 
     private var hud: some View {
         HStack {
-            Label("\(session.snapshot.waveIndex + 1)/\(session.mission.waves.count)", systemImage: "waveform.path")
+            Label(
+                session.mission.isEndless
+                    ? "\(session.snapshot.waveIndex + 1)/∞"
+                    : "\(session.snapshot.waveIndex + 1)/\(session.mission.waves.count)",
+                systemImage: "waveform.path"
+            )
             Spacer()
             Label("\(session.snapshot.energy)", systemImage: "bolt.fill")
                 .foregroundStyle(NeonTheme.amber)
@@ -122,6 +133,7 @@ struct GameHostView: View {
             ForEach(0..<6, id: \.self) { socket in
                 let point = BattlefieldLayout.socketPoint(socket, in: proxy.size)
                 Button {
+                    session.setPaused(true)
                     session.selectedSocket = socket
                 } label: {
                     Circle()
@@ -149,21 +161,33 @@ struct GameHostView: View {
                 .background(NeonTheme.panel)
                 .accessibilityIdentifier("game.startWave")
         } else {
-            Text(String(
-                format: String(localized: "game.wave"),
-                Int64(min(session.snapshot.waveIndex + 1, session.mission.waves.count)),
-                Int64(session.mission.waves.count)
-            ))
+            Text(waveStatus)
             .frame(maxWidth: .infinity)
             .frame(height: 66)
             .background(NeonTheme.panel)
         }
     }
 
+    private var waveStatus: String {
+        if session.mission.isEndless {
+            return "\(String(localized: "home.endless")) · \(session.snapshot.waveIndex + 1)"
+        }
+        return String(
+            format: String(localized: "game.wave"),
+            Int64(min(session.snapshot.waveIndex + 1, session.mission.waves.count)),
+            Int64(session.mission.waves.count)
+        )
+    }
+
     private var selectedSocketBinding: Binding<Bool> {
         Binding(
             get: { session.selectedSocket != nil },
-            set: { if $0 == false { session.selectedSocket = nil } }
+            set: {
+                if $0 == false {
+                    session.selectedSocket = nil
+                    session.setPaused(false)
+                }
+            }
         )
     }
 
@@ -206,6 +230,7 @@ private struct DefeatChoiceOverlay: View {
 private struct TowerControlSheet: View {
     @ObservedObject var session: GameSessionModel
     let socket: Int
+    let onTowerAction: () -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -215,14 +240,14 @@ private struct TowerControlSheet: View {
                     .font(.title2.bold())
                 HStack {
                     Button("game.upgrade") {
-                        session.upgrade(at: socket)
+                        if session.upgrade(at: socket) { onTowerAction() }
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(tower.level >= 3)
                     .accessibilityIdentifier("tower.upgrade")
                     Button("game.sell") {
-                        session.sell(at: socket)
+                        if session.sell(at: socket) { onTowerAction() }
                         dismiss()
                     }
                     .buttonStyle(.bordered)
@@ -232,7 +257,7 @@ private struct TowerControlSheet: View {
                 Text("game.build").font(.title2.bold())
                 ForEach(TowerKind.allCases, id: \.self) { kind in
                     Button {
-                        session.build(kind, at: socket)
+                        if session.build(kind, at: socket) { onTowerAction() }
                         dismiss()
                     } label: {
                         HStack {

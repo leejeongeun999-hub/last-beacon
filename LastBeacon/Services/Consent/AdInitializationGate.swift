@@ -8,5 +8,8 @@ struct AdInitializationGate: Equatable, Sendable {
         initialized = true
         return true
     }
-}
 
+    mutating func reset() {
+        initialized = false
+    }
+}

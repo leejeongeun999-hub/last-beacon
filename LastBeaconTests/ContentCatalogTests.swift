@@ -56,5 +56,28 @@ final class ContentCatalogTests: XCTestCase {
         XCTAssertEqual(first.count, 3)
         XCTAssertEqual(Set(first.map(\.id)).count, 3)
     }
-}
 
+    func testUpgradeOffersExcludeDefinitionsAlreadyAtMaximumTier() {
+        let upgrades = [
+            UpgradeDefinition(id: "maxed", nameKey: "a", descriptionKey: "b", category: .pulse, maximumTier: 1),
+            UpgradeDefinition(id: "open", nameKey: "c", descriptionKey: "d", category: .laser, maximumTier: 2)
+        ]
+
+        let offer = UpgradeOffering.make(from: upgrades, seed: 1, count: 3, appliedIDs: ["maxed"])
+
+        XCTAssertEqual(offer.map(\.id), ["open"])
+    }
+
+    func testEndlessMissionProvidesLongCappedScaling() {
+        let endless = LaunchMissions.endless
+
+        XCTAssertTrue(endless.isEndless)
+        XCTAssertEqual(endless.waves.count, 120)
+        XCTAssertTrue(endless.waves.allSatisfy { $0.spawns.count <= 25 })
+        XCTAssertTrue(endless.waves.enumerated().allSatisfy { index, wave in
+            (index + 1).isMultiple(of: 8)
+                ? wave.spawns.last?.kind == .sectorBoss
+                : true
+        })
+    }
+}

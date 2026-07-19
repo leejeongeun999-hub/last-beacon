@@ -21,11 +21,14 @@ enum UpgradeOffering {
     static func make(
         from upgrades: [UpgradeDefinition],
         seed: UInt64,
-        count: Int = 3
+        count: Int = 3,
+        appliedIDs: [String] = []
     ) -> [UpgradeDefinition] {
         guard upgrades.isEmpty == false, count > 0 else { return [] }
+        let tierCounts = Dictionary(grouping: appliedIDs, by: { $0 }).mapValues(\.count)
         var generator = SeededGenerator(seed: seed)
-        var shuffled = upgrades
+        var shuffled = upgrades.filter { tierCounts[$0.id, default: 0] < $0.maximumTier }
+        guard shuffled.isEmpty == false else { return [] }
         for index in shuffled.indices.dropLast() {
             let distance = shuffled.count - index
             let offset = Int(generator.next() % UInt64(distance))
@@ -77,4 +80,3 @@ extension UpgradeDefinition {
         )
     }
 }
-

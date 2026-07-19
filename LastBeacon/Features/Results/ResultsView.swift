@@ -20,7 +20,9 @@ struct ResultsView: View {
             ))
             Spacer()
             Button("common.retry") {
-                if let mission = model.catalog.missions.first(where: { $0.id == result.missionID }) {
+                if result.missionID == LaunchMissions.endless.id {
+                    model.startEndless()
+                } else if let mission = model.catalog.missions.first(where: { $0.id == result.missionID }) {
                     model.start(mission: mission)
                 }
             }
@@ -33,4 +35,3 @@ struct ResultsView: View {
         .neonBackground()
     }
 }
-

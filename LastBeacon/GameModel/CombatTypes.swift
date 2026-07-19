@@ -88,6 +88,8 @@ struct MissionDefinition: Codable, Equatable, Identifiable, Sendable {
     let startingEnergy: Int
     let beaconHealth: Int
     let waves: [WaveDefinition]
+
+    var isEndless: Bool { id == "endless" }
 }
 
 enum GamePhase: String, Codable, Equatable, Sendable {

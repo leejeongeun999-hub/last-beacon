@@ -16,4 +16,13 @@ final class ConsentTests: XCTestCase {
         XCTAssertFalse(gate.claimIfAllowed(canRequestAds: false))
         XCTAssertTrue(gate.claimIfAllowed(canRequestAds: true))
     }
+
+    func testInitializationCanBeResetAfterConsentWithdrawal() {
+        var gate = AdInitializationGate()
+
+        XCTAssertTrue(gate.claimIfAllowed(canRequestAds: true))
+        gate.reset()
+
+        XCTAssertTrue(gate.claimIfAllowed(canRequestAds: true))
+    }
 }

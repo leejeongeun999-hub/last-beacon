@@ -10,7 +10,8 @@ struct SettingsView: View {
                 Toggle("settings.effects", isOn: setting(\.effectsEnabled))
                 Toggle("settings.haptics", isOn: setting(\.hapticsEnabled))
                 Toggle("settings.reduceMotion", isOn: setting(\.reduceMotion))
-                Button("settings.tutorial") { }
+                Button("settings.tutorial") { model.replayTutorial() }
+                    .accessibilityIdentifier("settings.tutorial")
                 if model.document.consentCache.privacyOptionsRequired {
                     Button("settings.privacy") {
                         Task { @MainActor in await model.presentPrivacyOptions() }

@@ -8,7 +8,9 @@ PROJECT_ROOT = File.expand_path("..", __dir__)
 def last_beacon_api_key
   UI.user_error!("Release profile is unavailable") unless File.file?(RELEASE_PROFILE)
   profile = JSON.parse(File.read(RELEASE_PROFILE))
-  team = profile.fetch("appleTeams").first
+  teams = profile.fetch("appleTeams")
+  UI.user_error!("Release profile must contain exactly one authorized Apple team") unless teams.length == 1
+  team = teams.fetch(0)
   key_id = team.fetch("keyId")
   key_path = team.fetch("privateKeyPaths").find do |path|
     File.file?(path) && File.basename(path).include?(key_id)
@@ -64,7 +66,7 @@ platform :ios do
       app_identifier: "com.limeunkyu.lastbeacon",
       apple_id: "6792522098",
       ipa: File.join(PROJECT_ROOT, "build/release/LastBeacon-1.0.0-1.ipa"),
-      skip_waiting_for_build_processing: true
+      skip_waiting_for_build_processing: false
     )
   end
 

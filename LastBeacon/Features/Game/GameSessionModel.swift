@@ -46,7 +46,7 @@ final class GameSessionModel: ObservableObject {
             victory: snapshot.phase == .victory,
             beaconHealth: snapshot.beaconHealth,
             beaconMaximumHealth: mission.beaconHealth,
-            optionalConditionMet: snapshot.appliedUpgradeIDs.count <= 3,
+            optionalConditionMet: snapshot.appliedUpgradeIDs.count < 3,
             salvage: snapshot.waveIndex * 100
         )
     }
@@ -65,22 +65,37 @@ final class GameSessionModel: ObservableObject {
         }
     }
 
-    func build(_ kind: TowerKind, at socket: Int) {
-        engine.send(.build(kind: kind, socket: socket))
-        snapshot = engine.snapshot
-        handleTutorial(.builtTower(kind))
+    func setPaused(_ paused: Bool) {
+        clock.isPaused = paused
     }
 
-    func upgrade(at socket: Int) {
+    @discardableResult
+    func build(_ kind: TowerKind, at socket: Int) -> Bool {
+        let previousSnapshot = snapshot
+        engine.send(.build(kind: kind, socket: socket))
+        snapshot = engine.snapshot
+        let changed = snapshot != previousSnapshot
+        if changed { handleTutorial(.builtTower(kind)) }
+        return changed
+    }
+
+    @discardableResult
+    func upgrade(at socket: Int) -> Bool {
+        let previousSnapshot = snapshot
         let kind = snapshot.towers.first(where: { $0.socket == socket })?.kind
         engine.send(.upgrade(socket: socket))
         snapshot = engine.snapshot
-        if let kind { handleTutorial(.upgradedTower(kind)) }
+        let changed = snapshot != previousSnapshot
+        if changed, let kind { handleTutorial(.upgradedTower(kind)) }
+        return changed
     }
 
-    func sell(at socket: Int) {
+    @discardableResult
+    func sell(at socket: Int) -> Bool {
+        let previousSnapshot = snapshot
         engine.send(.sell(socket: socket))
         snapshot = engine.snapshot
+        return snapshot != previousSnapshot
     }
 
     func startWave() {
@@ -94,7 +109,8 @@ final class GameSessionModel: ObservableObject {
         let offerSeed = seed ^ UInt64(snapshot.waveIndex &* 7_919)
         offeredUpgrades = UpgradeOffering.make(
             from: ContentCatalog.launch.upgrades,
-            seed: offerSeed
+            seed: offerSeed,
+            appliedIDs: snapshot.appliedUpgradeIDs
         )
         offeredWaveIndices.insert(snapshot.waveIndex)
     }

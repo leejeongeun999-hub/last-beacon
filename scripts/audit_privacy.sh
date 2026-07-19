@@ -22,10 +22,25 @@ if [ "$manifest_count" -lt 1 ]; then
   exit 4
 fi
 
-echo "Privacy-sensitive linked frameworks"
-otool -L "$executable" | awk '/AdSupport|AppTrackingTransparency|GameKit|GoogleMobileAds|UserMessagingPlatform/ { print $1 }' | LC_ALL=C sort -u
+mach_o_list=$(mktemp "${TMPDIR:-/tmp}/last-beacon-mach-o.XXXXXX")
+trap 'rm -f "$mach_o_list"' EXIT INT TERM
+find "$app_path" -type f -print | while IFS= read -r candidate; do
+  if file "$candidate" | grep -q 'Mach-O'; then
+    printf '%s\n' "$candidate"
+  fi
+done > "$mach_o_list"
 
-if strings "$executable" | grep -q 'ATTrackingManager'; then
+if [ ! -s "$mach_o_list" ]; then
+  echo "no Mach-O binaries found" >&2
+  exit 5
+fi
+
+echo "Privacy-sensitive linked frameworks"
+while IFS= read -r binary; do
+  otool -L "$binary" 2>/dev/null || true
+done < "$mach_o_list" | awk '/AdSupport|AppTrackingTransparency|GameKit|GoogleMobileAds|UserMessagingPlatform/ { print $1 }' | LC_ALL=C sort -u
+
+if while IFS= read -r binary; do strings "$binary" 2>/dev/null; done < "$mach_o_list" | grep -q 'ATTrackingManager'; then
   echo "ATT symbol present"
 else
   echo "ATT symbol absent"

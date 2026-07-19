@@ -15,7 +15,7 @@ release_profile=/Users/lim-eunkyu/.codex/profiles/app-release.json
 if [ ! -f "$release_profile" ]; then
   echo "private release profile is unavailable" >&2
   failed=1
-elif ! ruby -rjson -e 'p=JSON.parse(File.read(ARGV.fetch(0))); t=p.fetch("appleTeams").first; k=t.fetch("keyId"); exit(t.fetch("privateKeyPaths").any? { |x| File.file?(x) && File.basename(x).include?(k) } ? 0 : 1)' "$release_profile"; then
+elif ! ruby -rjson -e 'p=JSON.parse(File.read(ARGV.fetch(0))); ts=p.fetch("appleTeams"); exit 1 unless ts.length == 1; t=ts.fetch(0); k=t.fetch("keyId"); exit(t.fetch("privateKeyPaths").any? { |x| File.file?(x) && File.basename(x).include?(k) } ? 0 : 1)' "$release_profile"; then
   echo "target App Store Connect key is unavailable" >&2
   failed=1
 fi
@@ -55,7 +55,7 @@ if printf '%s\n%s\n%s\n' "$configured_admob_app" "$plist_interstitial" "$plist_r
 fi
 
 if ! ruby -rjson -rspaceship -e '
-  p=JSON.parse(File.read(ARGV.fetch(0))); t=p.fetch("appleTeams").first; k=t.fetch("keyId"); path=t.fetch("privateKeyPaths").find { |x| File.file?(x) && File.basename(x).include?(k) };
+  p=JSON.parse(File.read(ARGV.fetch(0))); ts=p.fetch("appleTeams"); exit 1 unless ts.length == 1; t=ts.fetch(0); k=t.fetch("keyId"); path=t.fetch("privateKeyPaths").find { |x| File.file?(x) && File.basename(x).include?(k) };
   Spaceship::ConnectAPI.token=Spaceship::ConnectAPI::Token.create(key_id:k, issuer_id:t.fetch("issuerId"), filepath:path);
   a=Spaceship::ConnectAPI::App.find("com.limeunkyu.lastbeacon"); exit(a && a.id == "6792522098" ? 0 : 1)
 ' "$release_profile"; then

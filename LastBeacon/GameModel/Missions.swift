@@ -7,6 +7,8 @@ enum SectorModifier: String, Codable, CaseIterable, Sendable {
 }
 
 enum LaunchMissions {
+    static let endless = makeEndlessMission()
+
     static let all: [MissionDefinition] = (1...3).flatMap { sector in
         (1...4).map { mission in
             makeMission(sector: sector, mission: mission)
@@ -60,5 +62,40 @@ enum LaunchMissions {
         if index.isMultiple(of: 2) { return .swarm }
         return .drone
     }
-}
 
+    private static func makeEndlessMission() -> MissionDefinition {
+        let waves = (1...120).map { wave in
+            let regularCount = min(5 + (wave / 2), 24)
+            let interval = max(0.22, 0.75 - (Double(min(wave, 60)) * 0.008))
+            var spawns = (0..<regularCount).map { index in
+                EnemySpawn(
+                    time: Double(index) * interval,
+                    kind: endlessEnemyKind(wave: wave, index: index),
+                    lane: (wave + index) % 3
+                )
+            }
+            if wave.isMultiple(of: 8) {
+                spawns.append(EnemySpawn(
+                    time: (spawns.last?.time ?? 0) + 0.8,
+                    kind: .sectorBoss,
+                    lane: wave % 3
+                ))
+            }
+            return WaveDefinition(spawns: spawns)
+        }
+        return MissionDefinition(
+            id: "endless",
+            sector: 1,
+            startingEnergy: 100,
+            beaconHealth: 100,
+            waves: waves
+        )
+    }
+
+    private static func endlessEnemyKind(wave: Int, index: Int) -> EnemyKind {
+        if wave >= 9, index.isMultiple(of: 6) { return .splitter }
+        if wave >= 6, index.isMultiple(of: 5) { return .shieldVessel }
+        if wave >= 4, index.isMultiple(of: 4) { return .armoredFrigate }
+        return index.isMultiple(of: 2) ? .swarm : .drone
+    }
+}

@@ -12,6 +12,7 @@ enum AppRoute: Equatable {
 final class AppModel: ObservableObject {
     @Published private(set) var route: AppRoute = .home
     @Published private(set) var document: SaveDocument = .default
+    @Published private(set) var forceTutorial = false
     let catalog: ContentCatalog
     private let dependencies: AppDependencies
     private var adInitializationGate = AdInitializationGate()
@@ -38,11 +39,20 @@ final class AppModel: ObservableObject {
 
     func startAdvertising() async {
         await dependencies.consentManager.refresh()
+        await synchronizeAdvertisingState()
+    }
+
+    private func synchronizeAdvertisingState() async {
         document.consentCache.privacyOptionsRequired = dependencies.consentManager.privacyOptionsRequired
         document.consentCache.lastRefresh = Date()
         try? await dependencies.saveStore.save(document)
-        if adInitializationGate.claimIfAllowed(canRequestAds: dependencies.consentManager.canRequestAds) {
-            await dependencies.adService.prepare()
+        if dependencies.consentManager.canRequestAds {
+            if adInitializationGate.claimIfAllowed(canRequestAds: true) {
+                await dependencies.adService.prepare()
+            }
+        } else {
+            adInitializationGate.reset()
+            await dependencies.adService.disable()
         }
     }
 
@@ -50,9 +60,22 @@ final class AppModel: ObservableObject {
     func showSettings() { route = .settings }
     func goHome() { route = .home }
 
+    func startEndless() {
+        guard document.progression.endlessUnlocked else { return }
+        forceTutorial = false
+        route = .game(LaunchMissions.endless)
+    }
+
     func start(mission: MissionDefinition) {
         guard isMissionUnlocked(mission) else { return }
+        forceTutorial = false
         route = .game(mission)
+    }
+
+    func replayTutorial() {
+        guard let firstMission = catalog.missions.first else { return }
+        forceTutorial = true
+        route = .game(firstMission)
     }
 
     func complete(result: RunResult) async {
@@ -60,10 +83,15 @@ final class AppModel: ObservableObject {
             completedRuns: document.completedRunCount,
             lastInterstitialRun: document.lastInterstitialRun
         )
+        let previousInterstitialRun = document.lastInterstitialRun
         let wasTutorial = document.completedRunCount == 0
             && result.missionID == "sector-1-mission-1"
         let shouldPresentInterstitial = cadence.recordCompletedRun(wasTutorial: wasTutorial)
-        document.progression.apply(result: result)
+        if result.missionID == LaunchMissions.endless.id {
+            await submitEndlessScore(result.salvage)
+        } else {
+            document.progression.apply(result: result)
+        }
         document.completedRunCount = cadence.completedRuns
         document.lastInterstitialRun = cadence.lastInterstitialRun
         document.statistics.totalRuns += 1
@@ -74,7 +102,11 @@ final class AppModel: ObservableObject {
         try? await dependencies.saveStore.save(document)
         route = .results(result)
         if shouldPresentInterstitial {
-            await dependencies.adService.presentInterstitial()
+            let presented = await dependencies.adService.presentInterstitial()
+            if presented == false {
+                document.lastInterstitialRun = previousInterstitialRun
+                try? await dependencies.saveStore.save(document)
+            }
         }
     }
 
@@ -96,6 +128,7 @@ final class AppModel: ObservableObject {
     }
 
     func markTutorialCompleted() async {
+        forceTutorial = false
         document.tutorialCompleted = true
         try? await dependencies.saveStore.save(document)
     }
@@ -104,8 +137,14 @@ final class AppModel: ObservableObject {
         await dependencies.adService.presentRewardedRevive()
     }
 
+    func playTowerActionFeedback() {
+        dependencies.audioService.play(.tower)
+        dependencies.hapticService.play(.action)
+    }
+
     func presentPrivacyOptions() async {
         await dependencies.consentManager.presentPrivacyOptions()
+        await synchronizeAdvertisingState()
     }
 
     func isMissionUnlocked(_ mission: MissionDefinition) -> Bool {

@@ -57,7 +57,11 @@ private struct RootView: View {
         case let .game(mission):
             GameHostView(
                 mission: mission,
-                tutorialEnabled: mission.id == "sector-1-mission-1" && model.document.tutorialCompleted == false,
+                tutorialEnabled: model.forceTutorial || (
+                    mission.id == "sector-1-mission-1" && model.document.tutorialCompleted == false
+                ),
+                reduceMotion: model.document.settings.reduceMotion,
+                onTowerAction: model.playTowerActionFeedback,
                 onFinish: { result in
                     Task { @MainActor in await model.complete(result: result) }
                 },

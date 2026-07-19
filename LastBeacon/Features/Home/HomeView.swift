@@ -31,7 +31,7 @@ struct HomeView: View {
                 .controlSize(.large)
                 .accessibilityIdentifier("home.start")
 
-            Button("home.endless") { }
+            Button("home.endless") { model.startEndless() }
                 .buttonStyle(.bordered)
                 .disabled(model.document.progression.endlessUnlocked == false)
                 .accessibilityIdentifier("home.endless")

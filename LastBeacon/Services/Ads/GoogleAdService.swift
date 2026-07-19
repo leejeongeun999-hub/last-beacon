@@ -14,24 +14,36 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
     private var interstitialContinuation: CheckedContinuation<Void, Never>?
     private var rewardedContinuation: CheckedContinuation<Bool, Never>?
     private var earnedReward = false
+    private var isPrepared = false
+    private var consentGeneration = 0
 
     init(configuration: AdUnitConfiguration) {
         self.configuration = configuration
     }
 
     func prepare() async {
-        guard configuration.isUsable else { return }
+        guard configuration.isUsable, isPrepared == false else { return }
+        let generation = consentGeneration
         await withCheckedContinuation { continuation in
             MobileAds.shared.start { _ in continuation.resume() }
         }
+        guard generation == consentGeneration else { return }
+        isPrepared = true
         await loadInterstitial()
         await loadRewarded()
     }
 
-    func presentInterstitial() async {
-        guard configuration.isUsable else { return }
+    func disable() async {
+        consentGeneration += 1
+        isPrepared = false
+        interstitial = nil
+        rewarded = nil
+    }
+
+    func presentInterstitial() async -> Bool {
+        guard configuration.isUsable, isPrepared else { return false }
         if interstitial == nil { await loadInterstitial() }
-        guard let ad = interstitial, (try? ad.canPresent(from: nil)) != nil else { return }
+        guard let ad = interstitial, (try? ad.canPresent(from: nil)) != nil else { return false }
         interstitial = nil
         presentingInterstitial = ad
         ad.fullScreenContentDelegate = self
@@ -39,10 +51,11 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
             interstitialContinuation = continuation
             ad.present(from: nil)
         }
+        return true
     }
 
     func presentRewardedRevive() async -> Bool {
-        guard configuration.isUsable else { return false }
+        guard configuration.isUsable, isPrepared else { return false }
         if rewarded == nil { await loadRewarded() }
         guard let ad = rewarded, (try? ad.canPresent(from: nil)) != nil else { return false }
         rewarded = nil
@@ -69,20 +82,24 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
     }
 
     private func loadInterstitial() async {
+        guard isPrepared else { return }
         let result: SDKValue<InterstitialAd?> = await withCheckedContinuation { continuation in
             InterstitialAd.load(with: configuration.interstitialID, request: Request()) { ad, _ in
                 continuation.resume(returning: SDKValue(value: ad))
             }
         }
+        guard isPrepared else { return }
         interstitial = result.value
     }
 
     private func loadRewarded() async {
+        guard isPrepared else { return }
         let result: SDKValue<RewardedAd?> = await withCheckedContinuation { continuation in
             RewardedAd.load(with: configuration.rewardedID, request: Request()) { ad, _ in
                 continuation.resume(returning: SDKValue(value: ad))
             }
         }
+        guard isPrepared else { return }
         rewarded = result.value
     }
 
