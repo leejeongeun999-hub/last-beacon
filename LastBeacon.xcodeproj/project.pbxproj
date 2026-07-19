@@ -33,6 +33,7 @@
 		61F319DBFC8E67E2BCD659A0 /* victory.wav in Resources */ = {isa = PBXBuildFile; fileRef = 95BC772C168D3271CAC13CAE /* victory.wav */; };
 		6387C098BECD121F20998F5D /* Progression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E48FB0A20BE05603B63D0C5 /* Progression.swift */; };
 		6B15D33C5336DADCEE69E8A1 /* GameClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7853D95B7FE06C56FA2F08AC /* GameClock.swift */; };
+		704FC9D67054168C216CEC9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91E9BECB6E5C7E1ED41FE775 /* Assets.xcassets */; };
 		76E1704A62338275C4E541CE /* SaveStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBB0162B8FC4A56520B3507 /* SaveStore.swift */; };
 		79C9C60BD08E42507ACB8E9D /* AppModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DF832C864F25085FC4E62 /* AppModelTests.swift */; };
 		7B7825FE1970266E2D0822B2 /* ConsentManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619BED3F3A914E8E02A0E2AD /* ConsentManaging.swift */; };
@@ -123,6 +124,7 @@
 		82A1130E5FB53B4F770149A2 /* ResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
 		87BEFE51E7D26D5598674078 /* LastBeacon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LastBeacon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9179B2E8CFD14C710F9A8A36 /* HapticServing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticServing.swift; sourceTree = "<group>"; };
+		91E9BECB6E5C7E1ED41FE775 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		95335643ECF7331DCFD0D443 /* GameEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngineTests.swift; sourceTree = "<group>"; };
 		95BC772C168D3271CAC13CAE /* victory.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = victory.wav; sourceTree = "<group>"; };
 		9C44D23338AD635470A0C3BF /* NeonTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeonTheme.swift; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 			isa = PBXGroup;
 			children = (
 				45BF11DA0CEA98D9A527D17F /* AdConfiguration.plist */,
+				91E9BECB6E5C7E1ED41FE775 /* Assets.xcassets */,
 				44B4F820B028FAEDC12BC2BE /* Localizable.xcstrings */,
 				46AF581CB99853DEFE9563F8 /* PrivacyInfo.xcprivacy */,
 				AA5467C83795503CF7216448 /* Audio */,
@@ -521,6 +524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				075272E8B5062504E0786216 /* AdConfiguration.plist in Resources */,
+				704FC9D67054168C216CEC9F /* Assets.xcassets in Resources */,
 				10397F5369803CD173BA1C2E /* Localizable.xcstrings in Resources */,
 				8638A72C6771A05E2344CE8D /* PrivacyInfo.xcprivacy in Resources */,
 				51CC8562E2D25783BE84BCAC /* ambient_loop.wav in Resources */,

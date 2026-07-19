@@ -13,14 +13,17 @@ struct GameHostView: View {
     init(
         mission: MissionDefinition,
         tutorialEnabled: Bool,
+        seed: UInt64 = UInt64.random(in: 1...UInt64.max),
+        screenshotFixture: StoreScreenshotFixture? = nil,
         onFinish: @escaping (RunResult) -> Void,
         onTutorialComplete: @escaping () -> Void,
         requestRewardedRevive: @escaping () async -> Bool
     ) {
         _session = StateObject(wrappedValue: GameSessionModel(
             mission: mission,
-            seed: UInt64.random(in: 1...UInt64.max),
-            tutorialEnabled: tutorialEnabled
+            seed: seed,
+            tutorialEnabled: tutorialEnabled,
+            screenshotFixture: screenshotFixture
         ))
         self.onFinish = onFinish
         self.onTutorialComplete = onTutorialComplete

@@ -37,4 +37,22 @@ final class GameSessionTests: XCTestCase {
         XCTAssertTrue(session.offeredUpgrades.isEmpty)
         XCTAssertEqual(session.snapshot.appliedUpgradeIDs, [upgrade.id])
     }
+
+    func testStoreScreenshotFixturesAreDeterministicAndPopulated() {
+        let mission = ContentCatalog.launch.missions[0]
+        let active = GameSessionModel(
+            mission: mission,
+            seed: 4_242,
+            screenshotFixture: .active
+        )
+        let upgrade = GameSessionModel(
+            mission: mission,
+            seed: 4_242,
+            screenshotFixture: .upgrade
+        )
+
+        XCTAssertEqual(active.snapshot.towers.count, 3)
+        XCTAssertFalse(active.snapshot.enemies.isEmpty)
+        XCTAssertEqual(upgrade.offeredUpgrades.count, 3)
+    }
 }

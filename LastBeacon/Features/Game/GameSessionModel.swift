@@ -1,5 +1,10 @@
 import Foundation
 
+enum StoreScreenshotFixture: String, Sendable {
+    case active
+    case upgrade
+}
+
 @MainActor
 final class GameSessionModel: ObservableObject {
     @Published private(set) var snapshot: GameSnapshot
@@ -19,12 +24,20 @@ final class GameSessionModel: ObservableObject {
         return self.snapshot
     }
 
-    init(mission: MissionDefinition, seed: UInt64, tutorialEnabled: Bool = false) {
+    init(
+        mission: MissionDefinition,
+        seed: UInt64,
+        tutorialEnabled: Bool = false,
+        screenshotFixture: StoreScreenshotFixture? = nil
+    ) {
         self.mission = mission
         self.seed = seed
         engine = GameEngine(mission: mission, seed: seed)
         snapshot = engine.snapshot
         tutorial = tutorialEnabled ? TutorialCoordinator() : nil
+        if let screenshotFixture {
+            configure(screenshotFixture)
+        }
     }
 
     var result: RunResult {
@@ -105,5 +118,20 @@ final class GameSessionModel: ObservableObject {
         guard var coordinator = tutorial else { return }
         coordinator.handle(action)
         tutorial = coordinator
+    }
+
+    private func configure(_ fixture: StoreScreenshotFixture) {
+        engine.send(.build(kind: .pulse, socket: 0))
+        engine.send(.build(kind: .laser, socket: 1))
+        engine.send(.build(kind: .gravity, socket: 2))
+        switch fixture {
+        case .active:
+            engine.send(.startWave)
+            engine.advance(by: 0.2)
+            snapshot = engine.snapshot
+        case .upgrade:
+            snapshot = engine.snapshot
+            offerUpgrades()
+        }
     }
 }

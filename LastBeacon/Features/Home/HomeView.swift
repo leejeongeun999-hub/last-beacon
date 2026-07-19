@@ -6,10 +6,12 @@ struct HomeView: View {
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
-            Image(systemName: "dot.radiowaves.left.and.right")
-                .font(.system(size: 82, weight: .thin))
-                .foregroundStyle(NeonTheme.cyan)
-                .shadow(color: NeonTheme.cyan.opacity(0.8), radius: 18)
+            Image("Brand")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 190, height: 190)
+                .clipShape(RoundedRectangle(cornerRadius: 42, style: .continuous))
+                .shadow(color: NeonTheme.cyan.opacity(0.5), radius: 24)
                 .accessibilityHidden(true)
 
             Text("app.title")
