@@ -30,11 +30,15 @@ version=$(plutil -extract CFBundleShortVersionString raw "$info")
 build=$(plutil -extract CFBundleVersion raw "$info")
 admob=$(plutil -extract GADApplicationIdentifier raw "$info")
 encryption=$(plutil -extract ITSAppUsesNonExemptEncryption raw "$info")
+device_family=$(plutil -extract UIDeviceFamily json -o - "$info")
+requires_full_screen=$(plutil -extract UIRequiresFullScreen raw "$info" 2>/dev/null || true)
 
 [ "$bundle" = "$expected_bundle" ] || { echo "bundle mismatch" >&2; exit 4; }
 [ "$version" = "$expected_version" ] || { echo "version mismatch" >&2; exit 5; }
 [ "$build" = "$expected_build" ] || { echo "build mismatch" >&2; exit 6; }
 [ "$encryption" = false ] || { echo "export compliance mismatch" >&2; exit 7; }
+[ "$device_family" = '[1]' ] || { echo "release is not iPhone-only" >&2; exit 24; }
+[ "$requires_full_screen" = true ] || { echo "portrait release must require full screen" >&2; exit 25; }
 [ "$admob" = "$expected_admob_app" ] || { echo "AdMob app identity mismatch" >&2; exit 8; }
 
 ad_config="$app/AdConfiguration.plist"

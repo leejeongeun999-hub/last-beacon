@@ -30,6 +30,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.limeunkyu.lastbeacon
         PRODUCT_NAME: LastBeacon
+        TARGETED_DEVICE_FAMILY: "1"
         DEVELOPMENT_TEAM: BYSD998XY3
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: LastBeacon/Resources/Info.plist

@@ -29,6 +29,7 @@ expected_rewarded=ca-app-pub-5754584472729127/7070325868
 configured_bundle=$(xcodebuild -project LastBeacon.xcodeproj -target LastBeacon -configuration Release -showBuildSettings 2>/dev/null | awk '/^[[:space:]]*PRODUCT_BUNDLE_IDENTIFIER =/ { print $3; exit }')
 configured_team=$(xcodebuild -project LastBeacon.xcodeproj -target LastBeacon -configuration Release -showBuildSettings 2>/dev/null | awk '/^[[:space:]]*DEVELOPMENT_TEAM =/ { print $3; exit }')
 configured_admob_app=$(xcodebuild -project LastBeacon.xcodeproj -target LastBeacon -configuration Release -showBuildSettings 2>/dev/null | awk '/^[[:space:]]*GAD_APPLICATION_IDENTIFIER =/ { print $3; exit }')
+configured_device_family=$(xcodebuild -project LastBeacon.xcodeproj -target LastBeacon -configuration Release -showBuildSettings 2>/dev/null | awk -F ' = ' '/^[[:space:]]*TARGETED_DEVICE_FAMILY =/ { print $2; exit }')
 if [ "$configured_bundle" != "$expected_bundle" ]; then
   echo "release bundle mismatch: $configured_bundle" >&2
   failed=1
@@ -39,6 +40,10 @@ if [ "$configured_team" != "$expected_team" ]; then
 fi
 if [ "$configured_admob_app" != "$expected_admob_app" ]; then
   echo "AdMob app identity mismatch" >&2
+  failed=1
+fi
+if [ "$configured_device_family" != "1" ] || [ "$(plutil -extract UIRequiresFullScreen raw LastBeacon/Resources/Info.plist 2>/dev/null || true)" != true ]; then
+  echo "release must be iPhone-only and require full screen" >&2
   failed=1
 fi
 
