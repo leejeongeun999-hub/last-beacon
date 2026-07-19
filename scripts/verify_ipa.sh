@@ -50,11 +50,11 @@ if rg -a -q 'ca-app-pub-3940256099942544' "$app"; then
 fi
 
 codesign --verify --deep --strict "$app"
-codesign -d --entitlements "$temporary_directory/entitlements.plist" "$app" 2>/dev/null
-game_center=$(plutil -extract com.apple.developer.game-center raw "$temporary_directory/entitlements.plist" 2>/dev/null || true)
+codesign -d --entitlements :- "$app" > "$temporary_directory/entitlements.plist" 2>/dev/null
+game_center=$(plutil -extract 'com\.apple\.developer\.game-center' raw "$temporary_directory/entitlements.plist" 2>/dev/null || true)
 [ "$game_center" = true ] || { echo "Game Center entitlement missing" >&2; exit 13; }
 signed_application_identifier=$(plutil -extract application-identifier raw "$temporary_directory/entitlements.plist" 2>/dev/null || true)
-signed_team=$(plutil -extract com.apple.developer.team-identifier raw "$temporary_directory/entitlements.plist" 2>/dev/null || true)
+signed_team=$(plutil -extract 'com\.apple\.developer\.team-identifier' raw "$temporary_directory/entitlements.plist" 2>/dev/null || true)
 [ "$signed_application_identifier" = "$expected_team.$expected_bundle" ] || { echo "signed application identifier mismatch" >&2; exit 14; }
 [ "$signed_team" = "$expected_team" ] || { echo "signed team mismatch" >&2; exit 15; }
 

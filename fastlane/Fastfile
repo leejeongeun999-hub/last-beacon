@@ -54,7 +54,7 @@ platform :ios do
       archive_path: File.join(PROJECT_ROOT, "build/release/LastBeacon.xcarchive"),
       output_directory: File.join(PROJECT_ROOT, "build/release"),
       output_name: "LastBeacon-1.0.0-1.ipa",
-      export_method: "app-store-connect",
+      export_method: "app-store",
       xcargs: "-allowProvisioningUpdates"
     )
     sh(File.join(PROJECT_ROOT, "scripts/verify_ipa.sh"), File.join(PROJECT_ROOT, "build/release/LastBeacon-1.0.0-1.ipa"))
