@@ -119,11 +119,12 @@ platform :ios do
       app_version: "1.0.0",
       build_number: "1",
       submit_for_review: true,
-      automatic_release: false,
+      automatic_release: true,
       skip_binary_upload: true,
       skip_metadata: true,
       skip_screenshots: true,
       force: true,
+      precheck_include_in_app_purchases: false,
       submission_information: {
         add_id_info_uses_idfa: false,
         export_compliance_uses_encryption: false
