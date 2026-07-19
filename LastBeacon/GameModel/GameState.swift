@@ -15,6 +15,9 @@ struct GameState: Equatable, Sendable {
     var nextEnemyID: Int
     var accumulator: TimeInterval
     var random: SeededGenerator
+    var appliedUpgradeIDs: [String]
+    var damageMultipliers: [TowerKind: Double]
+    var gravitySlowFactor: Double
 
     init(mission: MissionDefinition, seed: UInt64) {
         self.mission = mission
@@ -31,6 +34,9 @@ struct GameState: Equatable, Sendable {
         nextEnemyID = 1
         accumulator = 0
         random = SeededGenerator(seed: seed)
+        appliedUpgradeIDs = []
+        damageMultipliers = [.pulse: 1, .laser: 1, .gravity: 1]
+        gravitySlowFactor = 0.6
     }
 
     var snapshot: GameSnapshot {
@@ -42,8 +48,8 @@ struct GameState: Equatable, Sendable {
             energy: energy,
             beaconHealth: beaconHealth,
             towers: towers.sorted { $0.socket < $1.socket },
-            enemies: enemies.sorted { $0.id < $1.id }
+            enemies: enemies.sorted { $0.id < $1.id },
+            appliedUpgradeIDs: appliedUpgradeIDs
         )
     }
 }
-

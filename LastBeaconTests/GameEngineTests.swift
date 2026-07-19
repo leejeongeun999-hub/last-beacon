@@ -95,6 +95,17 @@ final class GameEngineTests: XCTestCase {
 
         XCTAssertEqual(first.snapshot, second.snapshot)
     }
+
+    func testPulseUpgradeImprovesDamageAndAppearsInSnapshot() {
+        var engine = makeEngine(enemy: .armoredFrigate, startingEnergy: 100)
+        engine.send(.chooseUpgrade("pulse-capacitors"))
+        engine.send(.build(kind: .pulse, socket: 0))
+        engine.send(.startWave)
+        engine.advance(by: 0.4)
+
+        XCTAssertLessThan(engine.snapshot.enemies[0].health, 98)
+        XCTAssertEqual(engine.snapshot.appliedUpgradeIDs, ["pulse-capacitors"])
+    }
 }
 
 private extension GameEngineTests {

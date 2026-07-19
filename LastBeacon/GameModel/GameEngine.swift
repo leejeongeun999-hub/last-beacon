@@ -47,6 +47,28 @@ struct GameEngine: Sendable {
             guard state.phase == .planning,
                   state.waveIndex < state.mission.waves.count else { return }
             state.phase = .active
+
+        case let .chooseUpgrade(id):
+            guard let upgrade = UpgradeDefinition.launch.first(where: { $0.id == id }) else { return }
+            let existingTier = state.appliedUpgradeIDs.filter { $0 == id }.count
+            guard existingTier < upgrade.maximumTier else { return }
+            state.appliedUpgradeIDs.append(id)
+            switch upgrade.category {
+            case .pulse:
+                state.damageMultipliers[.pulse, default: 1] *= 1.25
+            case .laser:
+                state.damageMultipliers[.laser, default: 1] *= 1.25
+            case .gravity:
+                state.gravitySlowFactor = max(0.35, state.gravitySlowFactor - 0.08)
+            case .beacon:
+                state.beaconHealth = min(state.mission.beaconHealth, state.beaconHealth + 10)
+            case .economy:
+                state.energy += 15
+            case .synergy:
+                for kind in TowerKind.allCases {
+                    state.damageMultipliers[kind, default: 1] *= 1.1
+                }
+            }
         }
     }
 
@@ -107,7 +129,7 @@ struct GameEngine: Sendable {
     private mutating func moveEnemies(_ delta: TimeInterval) {
         let slowedLanes = Set(state.towers.filter { $0.kind == .gravity }.map(\.lane))
         for index in state.enemies.indices {
-            let multiplier = slowedLanes.contains(state.enemies[index].lane) ? 0.6 : 1
+            let multiplier = slowedLanes.contains(state.enemies[index].lane) ? state.gravitySlowFactor : 1
             state.enemies[index].progress += state.enemies[index].kind.speed * multiplier * delta
         }
 
@@ -131,7 +153,9 @@ struct GameEngine: Sendable {
                     .max(by: { state.enemies[$0].progress < state.enemies[$1].progress }) else { continue }
 
             let tower = state.towers[towerIndex]
-            let damage = tower.kind.damage * (1 + Double(tower.level - 1) * 0.5)
+            let damage = tower.kind.damage
+                * (1 + Double(tower.level - 1) * 0.5)
+                * state.damageMultipliers[tower.kind, default: 1]
             apply(damage: damage, ignoresArmor: tower.kind == .laser, to: targetIndex)
             state.towers[towerIndex].cooldownRemaining += tower.kind.cooldown
         }

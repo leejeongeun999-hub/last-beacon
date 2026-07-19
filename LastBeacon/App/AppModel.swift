@@ -51,6 +51,11 @@ final class AppModel: ObservableObject {
         try? await dependencies.saveStore.save(document)
     }
 
+    func markTutorialCompleted() async {
+        document.tutorialCompleted = true
+        try? await dependencies.saveStore.save(document)
+    }
+
     func isMissionUnlocked(_ mission: MissionDefinition) -> Bool {
         guard document.progression.isSectorUnlocked(mission.sector) else { return false }
         guard let index = catalog.missions.firstIndex(where: { $0.id == mission.id }) else { return false }
@@ -59,4 +64,3 @@ final class AppModel: ObservableObject {
         return document.progression.stars(for: catalog.missions[index - 1].id) > 0
     }
 }
-

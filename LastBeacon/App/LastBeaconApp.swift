@@ -27,27 +27,20 @@ private struct RootView: View {
         case .missions:
             MissionSelectView(model: model)
         case let .game(mission):
-            GamePendingView(model: model, mission: mission)
+            GameHostView(
+                mission: mission,
+                tutorialEnabled: mission.id == "sector-1-mission-1" && model.document.tutorialCompleted == false,
+                onFinish: { result in
+                    Task { @MainActor in await model.complete(result: result) }
+                },
+                onTutorialComplete: {
+                    Task { @MainActor in await model.markTutorialCompleted() }
+                }
+            )
         case let .results(result):
             ResultsView(model: model, result: result)
         case .settings:
             SettingsView(model: model)
         }
-    }
-}
-
-private struct GamePendingView: View {
-    @ObservedObject var model: AppModel
-    let mission: MissionDefinition
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Text("app.title").font(.largeTitle.bold())
-            Text(mission.id).foregroundStyle(.secondary)
-            ProgressView().tint(NeonTheme.cyan)
-            Button("common.back") { model.showMissions() }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .neonBackground()
     }
 }

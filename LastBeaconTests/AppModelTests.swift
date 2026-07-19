@@ -39,6 +39,18 @@ final class AppModelTests: XCTestCase {
         let savedAfterSettings = await store.saved()
         XCTAssertTrue(savedAfterSettings.settings.reduceMotion)
     }
+
+    func testTutorialCompletionPersists() async {
+        let store = MemorySaveStore()
+        let model = AppModel(dependencies: AppDependencies(saveStore: store))
+        await model.load()
+
+        await model.markTutorialCompleted()
+
+        XCTAssertTrue(model.document.tutorialCompleted)
+        let saved = await store.saved()
+        XCTAssertTrue(saved.tutorialCompleted)
+    }
 }
 
 private actor MemorySaveStore: SaveStore {
