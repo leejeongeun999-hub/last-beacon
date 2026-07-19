@@ -6,6 +6,7 @@ if [ -z "$app_path" ] || [ ! -d "$app_path" ]; then
   echo "usage: scripts/audit_privacy.sh /path/to/LastBeacon.app" >&2
   exit 2
 fi
+project_root=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 
 executable="$app_path/LastBeacon"
 if [ ! -f "$executable" ]; then
@@ -40,8 +41,19 @@ while IFS= read -r binary; do
   otool -L "$binary" 2>/dev/null || true
 done < "$mach_o_list" | awk '/AdSupport|AppTrackingTransparency|GameKit|GoogleMobileAds|UserMessagingPlatform/ { print $1 }' | LC_ALL=C sort -u
 
+if rg -n 'AppTrackingTransparency|ATTrackingManager|requestTrackingAuthorization' \
+    "$project_root/LastBeacon" --glob '*.swift' >/dev/null; then
+  echo "direct ATT use found in application source" >&2
+  exit 6
+fi
+
+if plutil -extract NSUserTrackingUsageDescription raw "$app_path/Info.plist" >/dev/null 2>&1; then
+  echo "tracking usage description found without approved tracking flow" >&2
+  exit 7
+fi
+
 if while IFS= read -r binary; do strings "$binary" 2>/dev/null; done < "$mach_o_list" | grep -q 'ATTrackingManager'; then
-  echo "ATT symbol present"
+  echo "ATT SDK symbol present; direct application ATT use absent"
 else
   echo "ATT symbol absent"
 fi

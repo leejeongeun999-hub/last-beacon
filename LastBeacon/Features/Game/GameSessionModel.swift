@@ -46,8 +46,8 @@ final class GameSessionModel: ObservableObject {
             victory: snapshot.phase == .victory,
             beaconHealth: snapshot.beaconHealth,
             beaconMaximumHealth: mission.beaconHealth,
-            optionalConditionMet: snapshot.appliedUpgradeIDs.count < 3,
-            salvage: snapshot.waveIndex * 100
+            optionalConditionMet: mission.optionalConditionMet(in: snapshot),
+            salvage: min(snapshot.waveIndex, Int.max / 100) * 100
         )
     }
 

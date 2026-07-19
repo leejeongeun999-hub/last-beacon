@@ -122,6 +122,48 @@ final class GameEngineTests: XCTestCase {
         engine.send(.reviveBeacon)
         XCTAssertEqual(engine.snapshot.beaconHealth, 8)
     }
+
+    func testEndlessMissionCyclesWithoutVictory() {
+        let endless = MissionDefinition(
+            id: "endless",
+            sector: 1,
+            startingEnergy: 100,
+            beaconHealth: 100,
+            waves: [WaveDefinition(spawns: [])]
+        )
+        var engine = GameEngine(mission: endless, seed: 1)
+
+        for expectedWave in 1...3 {
+            engine.send(.startWave)
+            engine.advance(by: 0.1)
+            XCTAssertEqual(engine.snapshot.phase, .planning)
+            XCTAssertEqual(engine.snapshot.waveIndex, expectedWave)
+        }
+    }
+
+    func testSectorModifiersCreateDistinctBossBehavior() {
+        func spawnedBoss(sector: Int) -> Enemy {
+            let definition = MissionDefinition(
+                id: "sector-\(sector)-mission-4",
+                sector: sector,
+                startingEnergy: 100,
+                beaconHealth: 100,
+                waves: [WaveDefinition(spawns: [EnemySpawn(time: 0, kind: .sectorBoss, lane: 0)])]
+            )
+            var engine = GameEngine(mission: definition, seed: 1)
+            engine.send(.startWave)
+            engine.advance(by: 0.05)
+            return engine.snapshot.enemies[0]
+        }
+
+        let solarBoss = spawnedBoss(sector: 1)
+        let ionBoss = spawnedBoss(sector: 2)
+        let darkBoss = spawnedBoss(sector: 3)
+
+        XCTAssertGreaterThan(solarBoss.progress, ionBoss.progress)
+        XCTAssertGreaterThan(ionBoss.maximumShield, solarBoss.maximumShield)
+        XCTAssertGreaterThan(darkBoss.maximumHealth, ionBoss.maximumHealth)
+    }
 }
 
 private extension GameEngineTests {

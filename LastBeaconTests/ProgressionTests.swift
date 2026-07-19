@@ -2,6 +2,22 @@ import XCTest
 @testable import LastBeacon
 
 final class ProgressionTests: XCTestCase {
+    func testAttainableCampaignResultsUnlockSectorThree() {
+        var progression = Progression()
+        for mission in ContentCatalog.launch.missions.prefix(6) {
+            progression.apply(result: RunResult(
+                missionID: mission.id,
+                victory: true,
+                beaconHealth: 100,
+                beaconMaximumHealth: 100,
+                optionalConditionMet: true,
+                salvage: 100
+            ))
+        }
+
+        XCTAssertEqual(progression.totalStars, 18)
+        XCTAssertTrue(progression.isSectorUnlocked(3))
+    }
     func testVictoryAwardsThreeIndependentStars() {
         var progression = Progression()
         let result = RunResult(

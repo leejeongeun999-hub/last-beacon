@@ -122,6 +122,7 @@ final class AppModelTests: XCTestCase {
             consentManager: FakeConsentManager(canRequestAds: false, privacyOptionsRequired: false)
         ))
         await model.load()
+        await model.markTutorialCompleted()
         let mission = ContentCatalog.launch.missions[0]
         let result = RunResult(
             missionID: mission.id, victory: true,
@@ -156,6 +157,26 @@ final class AppModelTests: XCTestCase {
         ads.interstitialResult = true
         await model.complete(result: result)
         XCTAssertEqual(ads.interstitialCount, 2)
+    }
+
+    func testReplayedTutorialNeverPresentsInterstitial() async {
+        let store = MemorySaveStore()
+        let ads = FakeAdService()
+        let model = AppModel(dependencies: AppDependencies(saveStore: store, adService: ads))
+        await model.load()
+        await model.markTutorialCompleted()
+        let mission = ContentCatalog.launch.missions[0]
+        let result = RunResult(
+            missionID: mission.id, victory: true,
+            beaconHealth: 100, beaconMaximumHealth: 100,
+            optionalConditionMet: true, salvage: 100
+        )
+        await model.complete(result: result)
+
+        model.replayTutorial()
+        await model.complete(result: result)
+
+        XCTAssertEqual(ads.interstitialCount, 0)
     }
 
     func testEndlessUnlockStartsRunAndCompletionSavesHighScore() async {

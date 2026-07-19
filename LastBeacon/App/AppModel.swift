@@ -17,6 +17,7 @@ final class AppModel: ObservableObject {
     private let dependencies: AppDependencies
     private var adInitializationGate = AdInitializationGate()
     private var scoreQueue = GameCenterSubmissionQueue()
+    private var activeRunIsTutorial = false
 
     init(
         dependencies: AppDependencies,
@@ -58,16 +59,22 @@ final class AppModel: ObservableObject {
 
     func showMissions() { route = .missions }
     func showSettings() { route = .settings }
-    func goHome() { route = .home }
+    func goHome() {
+        activeRunIsTutorial = false
+        route = .home
+    }
 
     func startEndless() {
         guard document.progression.endlessUnlocked else { return }
         forceTutorial = false
+        activeRunIsTutorial = false
         route = .game(LaunchMissions.endless)
     }
 
     func start(mission: MissionDefinition) {
         guard isMissionUnlocked(mission) else { return }
+        activeRunIsTutorial = mission.id == "sector-1-mission-1"
+            && document.tutorialCompleted == false
         forceTutorial = false
         route = .game(mission)
     }
@@ -75,6 +82,7 @@ final class AppModel: ObservableObject {
     func replayTutorial() {
         guard let firstMission = catalog.missions.first else { return }
         forceTutorial = true
+        activeRunIsTutorial = true
         route = .game(firstMission)
     }
 
@@ -84,8 +92,8 @@ final class AppModel: ObservableObject {
             lastInterstitialRun: document.lastInterstitialRun
         )
         let previousInterstitialRun = document.lastInterstitialRun
-        let wasTutorial = document.completedRunCount == 0
-            && result.missionID == "sector-1-mission-1"
+        let wasTutorial = activeRunIsTutorial
+        activeRunIsTutorial = false
         let shouldPresentInterstitial = cadence.recordCompletedRun(wasTutorial: wasTutorial)
         if result.missionID == LaunchMissions.endless.id {
             await submitEndlessScore(result.salvage)

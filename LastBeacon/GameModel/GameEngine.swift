@@ -52,7 +52,7 @@ struct GameEngine: Sendable {
 
         case .startWave:
             guard state.phase == .planning,
-                  state.waveIndex < state.mission.waves.count else { return }
+                  state.mission.isEndless || state.waveIndex < state.mission.waves.count else { return }
             state.phase = .active
 
         case let .chooseUpgrade(id):
@@ -104,19 +104,32 @@ struct GameEngine: Sendable {
     }
 
     private mutating func spawnReadyEnemies() {
-        let spawns = state.mission.waves[state.waveIndex].spawns
+        let spawns = currentWave.spawns
         while state.spawnCursor < spawns.count,
               spawns[state.spawnCursor].time <= state.waveElapsed {
             let spawn = spawns[state.spawnCursor]
+            var health = spawn.kind.baseHealth
+            var shield = spawn.kind.maximumShield
+            if state.mission.sectorModifier == .ionStorm {
+                shield = spawn.kind == .sectorBoss ? 80 : shield * 1.5
+            }
+            if state.mission.sectorModifier == .darkMatter, spawn.kind == .sectorBoss {
+                health *= 1.6
+            }
+            if state.mission.isEndless {
+                let scale = min(8.0, 1 + (Double(min(state.waveIndex, 140)) * 0.05))
+                health *= scale
+                shield *= scale
+            }
             state.enemies.append(Enemy(
                 id: state.nextEnemyID,
                 kind: spawn.kind,
                 lane: min(max(spawn.lane, 0), 2),
                 progress: min(max(spawn.progress, 0), 1),
-                health: spawn.kind.baseHealth,
-                maximumHealth: spawn.kind.baseHealth,
-                shield: spawn.kind.maximumShield,
-                maximumShield: spawn.kind.maximumShield,
+                health: health,
+                maximumHealth: health,
+                shield: shield,
+                maximumShield: shield,
                 timeSinceDamage: 0
             ))
             state.nextEnemyID += 1
@@ -127,7 +140,8 @@ struct GameEngine: Sendable {
     private mutating func regenerateShields(_ delta: TimeInterval) {
         for index in state.enemies.indices where state.enemies[index].maximumShield > 0 {
             state.enemies[index].timeSinceDamage += delta
-            if state.enemies[index].timeSinceDamage > 3 {
+            let delay = state.mission.sectorModifier == .ionStorm ? 2.0 : 3.0
+            if state.enemies[index].timeSinceDamage > delay {
                 state.enemies[index].shield = min(
                     state.enemies[index].maximumShield,
                     state.enemies[index].shield + (10 * delta)
@@ -139,8 +153,11 @@ struct GameEngine: Sendable {
     private mutating func moveEnemies(_ delta: TimeInterval) {
         let slowedLanes = Set(state.towers.filter { $0.kind == .gravity }.map(\.lane))
         for index in state.enemies.indices {
-            let multiplier = slowedLanes.contains(state.enemies[index].lane) ? state.gravitySlowFactor : 1
-            state.enemies[index].progress += state.enemies[index].kind.speed * multiplier * delta
+            var modifier = slowedLanes.contains(state.enemies[index].lane) ? state.gravitySlowFactor : 1
+            if state.mission.sectorModifier == .solarWind { modifier *= 1.15 }
+            if state.mission.sectorModifier == .darkMatter,
+               state.enemies[index].kind == .sectorBoss { modifier *= 1.35 }
+            state.enemies[index].progress += state.enemies[index].kind.speed * modifier * delta
         }
 
         let arrivals = state.enemies.filter { $0.progress >= 1 }
@@ -212,15 +229,26 @@ struct GameEngine: Sendable {
     }
 
     private mutating func finishWaveIfNeeded() {
-        let wave = state.mission.waves[state.waveIndex]
+        let wave = currentWave
         guard state.spawnCursor == wave.spawns.count, state.enemies.isEmpty else { return }
-        state.waveIndex += 1
-        if state.waveIndex == state.mission.waves.count {
+        state.waveIndex = min(state.waveIndex + 1, 1_000_000)
+        if state.mission.isEndless {
+            state.phase = .planning
+            state.waveElapsed = 0
+            state.spawnCursor = 0
+        } else if state.waveIndex == state.mission.waves.count {
             state.phase = .victory
         } else {
             state.phase = .planning
             state.waveElapsed = 0
             state.spawnCursor = 0
         }
+    }
+
+    private var currentWave: WaveDefinition {
+        let index = state.mission.isEndless
+            ? state.waveIndex % state.mission.waves.count
+            : state.waveIndex
+        return state.mission.waves[index]
     }
 }

@@ -11,7 +11,7 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
     private var rewarded: RewardedAd?
     private var presentingInterstitial: InterstitialAd?
     private var presentingRewarded: RewardedAd?
-    private var interstitialContinuation: CheckedContinuation<Void, Never>?
+    private var interstitialContinuation: CheckedContinuation<Bool, Never>?
     private var rewardedContinuation: CheckedContinuation<Bool, Never>?
     private var earnedReward = false
     private var isPrepared = false
@@ -47,11 +47,10 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
         interstitial = nil
         presentingInterstitial = ad
         ad.fullScreenContentDelegate = self
-        await withCheckedContinuation { continuation in
+        return await withCheckedContinuation { continuation in
             interstitialContinuation = continuation
             ad.present(from: nil)
         }
-        return true
     }
 
     func presentRewardedRevive() async -> Bool {
@@ -71,14 +70,14 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
     }
 
     func adDidDismissFullScreenContent(_ ad: any FullScreenPresentingAd) {
-        finishPresentation(for: ad)
+        finishPresentation(for: ad, presentedSuccessfully: true)
     }
 
     func ad(
         _ ad: any FullScreenPresentingAd,
         didFailToPresentFullScreenContentWithError error: any Error
     ) {
-        finishPresentation(for: ad)
+        finishPresentation(for: ad, presentedSuccessfully: false)
     }
 
     private func loadInterstitial() async {
@@ -103,11 +102,14 @@ final class GoogleAdService: NSObject, AdServing, FullScreenContentDelegate {
         rewarded = result.value
     }
 
-    private func finishPresentation(for ad: any FullScreenPresentingAd) {
+    private func finishPresentation(
+        for ad: any FullScreenPresentingAd,
+        presentedSuccessfully: Bool
+    ) {
         let object = ad as AnyObject
         if let current = presentingInterstitial, object === current {
             presentingInterstitial = nil
-            interstitialContinuation?.resume()
+            interstitialContinuation?.resume(returning: presentedSuccessfully)
             interstitialContinuation = nil
             Task { await loadInterstitial() }
         } else if let current = presentingRewarded, object === current {

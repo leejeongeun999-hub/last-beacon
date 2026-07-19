@@ -77,8 +77,8 @@ final class GameSessionTests: XCTestCase {
         XCTAssertEqual(session.snapshot, beforePause)
     }
 
-    func testOptionalConditionFailsAfterChoosingThreeUpgrades() {
-        let session = GameSessionModel(mission: ContentCatalog.launch.missions[0], seed: 10)
+    func testSecondMissionOptionalConditionRequiresThreeTowers() {
+        let session = GameSessionModel(mission: ContentCatalog.launch.missions[1], seed: 10)
         for _ in 0..<3 {
             session.offerUpgrades()
             let upgrade = try! XCTUnwrap(session.offeredUpgrades.first)
@@ -96,5 +96,30 @@ final class GameSessionTests: XCTestCase {
         XCTAssertTrue(session.upgrade(at: 0))
         XCTAssertTrue(session.sell(at: 0))
         XCTAssertFalse(session.sell(at: 0))
+    }
+
+    func testMissionSpecificOptionalConditionsAreAttainable() {
+        let missions = ContentCatalog.launch.missions
+        let first = GameSessionModel(mission: missions[0], seed: 1)
+        chooseThreeUpgrades(in: first)
+        XCTAssertTrue(first.result.optionalConditionMet)
+
+        let second = GameSessionModel(mission: missions[1], seed: 1)
+        second.build(.pulse, at: 0)
+        second.build(.pulse, at: 1)
+        second.build(.pulse, at: 2)
+        chooseThreeUpgrades(in: second)
+        XCTAssertTrue(second.result.optionalConditionMet)
+
+        let fourth = GameSessionModel(mission: missions[3], seed: 1)
+        chooseThreeUpgrades(in: fourth)
+        XCTAssertTrue(fourth.result.optionalConditionMet)
+    }
+
+    private func chooseThreeUpgrades(in session: GameSessionModel) {
+        for _ in 0..<3 {
+            session.offerUpgrades()
+            session.choose(try! XCTUnwrap(session.offeredUpgrades.first))
+        }
     }
 }

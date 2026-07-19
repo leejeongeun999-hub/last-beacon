@@ -90,6 +90,30 @@ struct MissionDefinition: Codable, Equatable, Identifiable, Sendable {
     let waves: [WaveDefinition]
 
     var isEndless: Bool { id == "endless" }
+
+    var sectorModifier: SectorModifier? {
+        guard isEndless == false else { return nil }
+        switch sector {
+        case 1: return .solarWind
+        case 2: return .ionStorm
+        default: return .darkMatter
+        }
+    }
+
+    func optionalConditionMet(in snapshot: GameSnapshot) -> Bool {
+        guard isEndless == false else { return false }
+        let missionNumber = Int(id.split(separator: "-").last ?? "1") ?? 1
+        switch missionNumber {
+        case 1:
+            return snapshot.didUseRevive == false
+        case 2:
+            return snapshot.towers.count >= 3
+        case 3:
+            return snapshot.appliedUpgradeIDs.count >= 3
+        default:
+            return snapshot.beaconHealth == beaconHealth
+        }
+    }
 }
 
 enum GamePhase: String, Codable, Equatable, Sendable {
