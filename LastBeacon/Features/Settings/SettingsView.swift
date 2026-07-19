@@ -12,7 +12,9 @@ struct SettingsView: View {
                 Toggle("settings.reduceMotion", isOn: setting(\.reduceMotion))
                 Button("settings.tutorial") { }
                 if model.document.consentCache.privacyOptionsRequired {
-                    Button("settings.privacy") { }
+                    Button("settings.privacy") {
+                        Task { @MainActor in await model.presentPrivacyOptions() }
+                    }
                         .accessibilityIdentifier("settings.privacy")
                 }
             }
@@ -40,4 +42,3 @@ struct SettingsView: View {
         )
     }
 }
-

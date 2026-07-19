@@ -11,6 +11,13 @@ struct GameEngine: Sendable {
     var snapshot: GameSnapshot { state.snapshot }
 
     mutating func send(_ command: GameCommand) {
+        if command == .reviveBeacon {
+            guard state.phase == .defeat, state.didUseRevive == false else { return }
+            state.didUseRevive = true
+            state.beaconHealth = max(1, Int(Double(state.mission.beaconHealth) * 0.4))
+            state.phase = .active
+            return
+        }
         guard state.phase != .victory, state.phase != .defeat else { return }
 
         switch command {
@@ -69,6 +76,9 @@ struct GameEngine: Sendable {
                     state.damageMultipliers[kind, default: 1] *= 1.1
                 }
             }
+
+        case .reviveBeacon:
+            break
         }
     }
 

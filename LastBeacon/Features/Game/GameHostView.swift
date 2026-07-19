@@ -4,14 +4,18 @@ import SwiftUI
 struct GameHostView: View {
     @StateObject private var session: GameSessionModel
     @State private var didFinish = false
+    @State private var showingDefeatChoice = false
+    @State private var adUnavailable = false
     let onFinish: (RunResult) -> Void
     let onTutorialComplete: () -> Void
+    let requestRewardedRevive: () async -> Bool
 
     init(
         mission: MissionDefinition,
         tutorialEnabled: Bool,
         onFinish: @escaping (RunResult) -> Void,
-        onTutorialComplete: @escaping () -> Void
+        onTutorialComplete: @escaping () -> Void,
+        requestRewardedRevive: @escaping () async -> Bool
     ) {
         _session = StateObject(wrappedValue: GameSessionModel(
             mission: mission,
@@ -20,6 +24,7 @@ struct GameHostView: View {
         ))
         self.onFinish = onFinish
         self.onTutorialComplete = onTutorialComplete
+        self.requestRewardedRevive = requestRewardedRevive
     }
 
     var body: some View {
@@ -51,6 +56,26 @@ struct GameHostView: View {
                     }
                 )
             }
+            if showingDefeatChoice {
+                DefeatChoiceOverlay(
+                    adUnavailable: adUnavailable,
+                    revive: {
+                        Task { @MainActor in
+                            if await requestRewardedRevive() {
+                                session.revive()
+                                showingDefeatChoice = false
+                            } else {
+                                adUnavailable = true
+                            }
+                        }
+                    },
+                    finish: {
+                        showingDefeatChoice = false
+                        didFinish = true
+                        onFinish(session.result)
+                    }
+                )
+            }
         }
         .foregroundStyle(.white)
         .sheet(isPresented: selectedSocketBinding) {
@@ -61,9 +86,13 @@ struct GameHostView: View {
             }
         }
         .onChange(of: session.snapshot.phase) { _, phase in
-            guard didFinish == false, phase == .victory || phase == .defeat else { return }
-            didFinish = true
-            onFinish(session.result)
+            guard didFinish == false else { return }
+            if phase == .defeat, session.snapshot.didUseRevive == false {
+                showingDefeatChoice = true
+            } else if phase == .victory || phase == .defeat {
+                didFinish = true
+                onFinish(session.result)
+            }
         }
     }
 
@@ -140,6 +169,34 @@ struct GameHostView: View {
             return String(localized: String.LocalizationValue(tower.kind.titleKey))
         }
         return String(localized: "game.build")
+    }
+}
+
+private struct DefeatChoiceOverlay: View {
+    let adUnavailable: Bool
+    let revive: () -> Void
+    let finish: () -> Void
+
+    var body: some View {
+        VStack(spacing: 18) {
+            Text("results.defeat").font(.title.bold())
+            if adUnavailable {
+                Text("ad.unavailable")
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+            } else {
+                Button("ad.revive", action: revive)
+                    .buttonStyle(.borderedProminent)
+                    .tint(NeonTheme.cyan)
+                    .accessibilityIdentifier("ad.revive")
+            }
+            Button("common.continue", action: finish)
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("defeat.finish")
+        }
+        .padding(24)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22))
+        .padding(24)
     }
 }
 

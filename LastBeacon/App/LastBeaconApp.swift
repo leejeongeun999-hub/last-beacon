@@ -12,7 +12,10 @@ struct LastBeaconApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: model)
-                .task { await model.load() }
+                .task {
+                    await model.load()
+                    await model.startAdvertising()
+                }
         }
     }
 }
@@ -35,6 +38,9 @@ private struct RootView: View {
                 },
                 onTutorialComplete: {
                     Task { @MainActor in await model.markTutorialCompleted() }
+                },
+                requestRewardedRevive: {
+                    await model.requestRewardedRevive()
                 }
             )
         case let .results(result):

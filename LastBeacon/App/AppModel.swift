@@ -14,6 +14,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var document: SaveDocument = .default
     let catalog: ContentCatalog
     private let dependencies: AppDependencies
+    private var adInitializationGate = AdInitializationGate()
 
     init(
         dependencies: AppDependencies,
@@ -27,6 +28,16 @@ final class AppModel: ObservableObject {
         document = await dependencies.saveStore.load()
     }
 
+    func startAdvertising() async {
+        await dependencies.consentManager.refresh()
+        document.consentCache.privacyOptionsRequired = dependencies.consentManager.privacyOptionsRequired
+        document.consentCache.lastRefresh = Date()
+        try? await dependencies.saveStore.save(document)
+        if adInitializationGate.claimIfAllowed(canRequestAds: dependencies.consentManager.canRequestAds) {
+            await dependencies.adService.prepare()
+        }
+    }
+
     func showMissions() { route = .missions }
     func showSettings() { route = .settings }
     func goHome() { route = .home }
@@ -37,13 +48,24 @@ final class AppModel: ObservableObject {
     }
 
     func complete(result: RunResult) async {
+        var cadence = AdCadence(
+            completedRuns: document.completedRunCount,
+            lastInterstitialRun: document.lastInterstitialRun
+        )
+        let wasTutorial = document.completedRunCount == 0
+            && result.missionID == "sector-1-mission-1"
+        let shouldPresentInterstitial = cadence.recordCompletedRun(wasTutorial: wasTutorial)
         document.progression.apply(result: result)
-        document.completedRunCount += 1
+        document.completedRunCount = cadence.completedRuns
+        document.lastInterstitialRun = cadence.lastInterstitialRun
         document.statistics.totalRuns += 1
         document.statistics.totalSalvage += result.salvage
         if result.victory { document.statistics.victories += 1 }
         try? await dependencies.saveStore.save(document)
         route = .results(result)
+        if shouldPresentInterstitial {
+            await dependencies.adService.presentInterstitial()
+        }
     }
 
     func updateSettings(_ update: (inout GameSettings) -> Void) async {
@@ -54,6 +76,14 @@ final class AppModel: ObservableObject {
     func markTutorialCompleted() async {
         document.tutorialCompleted = true
         try? await dependencies.saveStore.save(document)
+    }
+
+    func requestRewardedRevive() async -> Bool {
+        await dependencies.adService.presentRewardedRevive()
+    }
+
+    func presentPrivacyOptions() async {
+        await dependencies.consentManager.presentPrivacyOptions()
     }
 
     func isMissionUnlocked(_ mission: MissionDefinition) -> Bool {

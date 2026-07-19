@@ -18,6 +18,7 @@ struct GameState: Equatable, Sendable {
     var appliedUpgradeIDs: [String]
     var damageMultipliers: [TowerKind: Double]
     var gravitySlowFactor: Double
+    var didUseRevive: Bool
 
     init(mission: MissionDefinition, seed: UInt64) {
         self.mission = mission
@@ -37,6 +38,7 @@ struct GameState: Equatable, Sendable {
         appliedUpgradeIDs = []
         damageMultipliers = [.pulse: 1, .laser: 1, .gravity: 1]
         gravitySlowFactor = 0.6
+        didUseRevive = false
     }
 
     var snapshot: GameSnapshot {
@@ -49,7 +51,8 @@ struct GameState: Equatable, Sendable {
             beaconHealth: beaconHealth,
             towers: towers.sorted { $0.socket < $1.socket },
             enemies: enemies.sorted { $0.id < $1.id },
-            appliedUpgradeIDs: appliedUpgradeIDs
+            appliedUpgradeIDs: appliedUpgradeIDs,
+            didUseRevive: didUseRevive
         )
     }
 }

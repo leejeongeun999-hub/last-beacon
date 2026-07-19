@@ -103,6 +103,7 @@ enum GameCommand: Equatable, Sendable {
     case sell(socket: Int)
     case startWave
     case chooseUpgrade(String)
+    case reviveBeacon
 }
 
 struct Tower: Codable, Equatable, Identifiable, Sendable {
@@ -138,4 +139,5 @@ struct GameSnapshot: Codable, Equatable, Sendable {
     let towers: [Tower]
     let enemies: [Enemy]
     let appliedUpgradeIDs: [String]
+    let didUseRevive: Bool
 }

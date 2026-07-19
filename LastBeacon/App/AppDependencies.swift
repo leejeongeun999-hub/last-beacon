@@ -1,7 +1,20 @@
 import Foundation
 
-struct AppDependencies: Sendable {
+@MainActor
+struct AppDependencies {
     let saveStore: any SaveStore
+    let adService: any AdServing
+    let consentManager: any ConsentManaging
+
+    init(
+        saveStore: any SaveStore,
+        adService: any AdServing = NoopAdService(),
+        consentManager: any ConsentManaging = NoopConsentManager()
+    ) {
+        self.saveStore = saveStore
+        self.adService = adService
+        self.consentManager = consentManager
+    }
 
     @MainActor
     static var live: AppDependencies {
@@ -14,6 +27,10 @@ struct AppDependencies: Sendable {
             support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
                 .appendingPathComponent("LastBeacon", isDirectory: true)
         }
-        return AppDependencies(saveStore: FileSaveStore(directory: support))
+        return AppDependencies(
+            saveStore: FileSaveStore(directory: support),
+            adService: GoogleAdService(configuration: .bundled),
+            consentManager: GoogleConsentManager()
+        )
     }
 }

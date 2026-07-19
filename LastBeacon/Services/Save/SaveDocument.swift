@@ -37,6 +37,7 @@ struct SaveDocument: Codable, Equatable, Sendable {
     var pendingScores: [PendingScore]
     var endlessHighScore: Int
     var completedRunCount: Int
+    var lastInterstitialRun: Int
 
     static let `default` = SaveDocument(
         schemaVersion: currentVersion,
@@ -47,7 +48,7 @@ struct SaveDocument: Codable, Equatable, Sendable {
         consentCache: ConsentCache(),
         pendingScores: [],
         endlessHighScore: 0,
-        completedRunCount: 0
+        completedRunCount: 0,
+        lastInterstitialRun: 0
     )
 }
-

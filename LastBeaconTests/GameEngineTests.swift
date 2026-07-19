@@ -106,6 +106,22 @@ final class GameEngineTests: XCTestCase {
         XCTAssertLessThan(engine.snapshot.enemies[0].health, 98)
         XCTAssertEqual(engine.snapshot.appliedUpgradeIDs, ["pulse-capacitors"])
     }
+
+    func testRewardedReviveRestoresFortyPercentOnlyOnce() {
+        let spawn = EnemySpawn(time: 0, kind: .sectorBoss, lane: 0, progress: 0.99)
+        var engine = GameEngine(mission: mission(spawns: [spawn], beaconHealth: 20), seed: 7)
+        engine.send(.startWave)
+        engine.advance(by: 1)
+        XCTAssertEqual(engine.snapshot.phase, .defeat)
+
+        engine.send(.reviveBeacon)
+        XCTAssertEqual(engine.snapshot.phase, .active)
+        XCTAssertEqual(engine.snapshot.beaconHealth, 8)
+        XCTAssertTrue(engine.snapshot.didUseRevive)
+
+        engine.send(.reviveBeacon)
+        XCTAssertEqual(engine.snapshot.beaconHealth, 8)
+    }
 }
 
 private extension GameEngineTests {

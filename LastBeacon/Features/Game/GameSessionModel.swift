@@ -93,6 +93,11 @@ final class GameSessionModel: ObservableObject {
         snapshot = engine.snapshot
     }
 
+    func revive() {
+        engine.send(.reviveBeacon)
+        snapshot = engine.snapshot
+    }
+
     func acknowledgeTutorial() { handleTutorial(.acknowledged) }
     func dismissTutorial() { tutorial = nil }
 
